@@ -6,7 +6,7 @@
 
 - MVC structure
 
-&emsp;&emsp;<a href='https://twofootdog.github.io/Spring-DAO%EC%99%80-Mapper%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90/'>controller > service > mapper(Impl) > mapper(xml)</a>
+&emsp;&emsp;<a href='https://twofootdog.github.io/Spring-DAO%EC%99%80-Mapper%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90/'>controller > service > mapperInterface > mapper.xml</a>
 
 - application.properties
 
