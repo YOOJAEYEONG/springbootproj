@@ -2,8 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.practice.springbootproj.board.BoardMapper">
-    <select id="boardList" resultType="com.practice.springbootproj.model.BoardDTO">
+    <select id="selectBoardList" resultType="com.practice.springbootproj.model.BoardDTO">
         SELECT * FROM boards
     </select>
 </mapper>

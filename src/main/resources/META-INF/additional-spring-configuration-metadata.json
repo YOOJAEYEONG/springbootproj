@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "log4jdbc.spylogdelegator.name",
+      "type": "java.lang.String",
+      "description": "Description for log4jdbc.spylogdelegator.name."
+    },
+    {
+      "name": "log4jdbc.dump.sql.maxlinelength",
+      "type": "java.lang.String",
+      "description": "Description for log4jdbc.dump.sql.maxlinelength."
+    }
+  ] }

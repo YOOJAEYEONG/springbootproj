@@ -8,24 +8,12 @@
 <body>
 <h2>메인페이지</h2>
 <ul>
-    <li><a href="/boardList">게시판</a></li>
+    <li><a href="/board/list">게시판</a></li>
 </ul>
 
 </body>
 <script>
-    var obj = {
-        title : 'title1',
-        name : 'name1',
-        selects : ['a','b'],
-    }
 
-    var frmDt = new FormData();
-    for (var key in obj){
-        frmDt.append(key,obj[key])
-    }
-    console.log(11,frmDt.values())
-    console.log('frmdt',frmDt)
-    console.log(Array.from(frmDt))
 
 </script>
 </html>

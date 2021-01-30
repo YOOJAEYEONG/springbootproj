@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class MainCtrl {
+public class MainController {
 
     @RequestMapping(value = "/")
     public ModelAndView mainCtrl(ModelAndView mv){
-        System.out.println("mainCtrl>");
+        System.out.println("mainController>");
 
         mv.addObject("boardList", 1);
-        mv.setViewName("main");
+        mv.setViewName("static/main");
         return mv;
     }
 }

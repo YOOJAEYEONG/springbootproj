@@ -9,6 +9,6 @@ import java.util.ArrayList;
 @Mapper
 public interface BoardMapper {
 
-    ArrayList<BoardDTO> boardList(BoardDTO boardDTO);
+    ArrayList<BoardDTO> selectBoardList();
 
 }

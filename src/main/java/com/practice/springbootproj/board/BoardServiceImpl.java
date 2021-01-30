@@ -1,28 +1,27 @@
 package com.practice.springbootproj.board;
 
 import com.practice.springbootproj.model.BoardDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j(topic = "BoardServiceImpl")
 @Service
 public class BoardServiceImpl implements BoardService{
 
     @Autowired
     private BoardMapper boardMapper;
 
-    public BoardServiceImpl(BoardMapper boardMapper) {
-        this.boardMapper = boardMapper;
-    }
 
 
     @Override
-    public List<BoardDTO> boardList(BoardDTO boardDTO) {
-        System.out.println(boardMapper.toString());
-        List<BoardDTO> list = boardMapper.boardList(boardDTO);
-        System.out.println("DB반환값"+list);
-        System.out.println("DTO"+boardDTO);
+    public List<BoardDTO> selectBoardList() {
+        List<BoardDTO> list = boardMapper.selectBoardList();
+        log.info("리스트",list.toString());
+
+        //System.out.println("DB반환값"+list);
         return list;
     }
 
