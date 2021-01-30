@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<!--<configuration debug="true">-->
+<configuration>
 
     <!-- Appenders -->
     <!--  전달받은 로그를 어디에 출력할지 결정합니다. (콘솔 출력, 파일 저장, 데이터베이스 저장 등)  -->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- appender에 포함되어 출력할 로그의 형식을 지정합니다.       -->
+    <appender name="consoleINFO" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>%d %5p [%c] %m%n</Pattern>
         </encoder>
     </appender>
 
-    <appender name="console-infolog" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <Pattern>%d %5p %m%n</Pattern>
-        </encoder>
-    </appender>
 
     <!-- Logger -->
     <!--
@@ -35,17 +31,18 @@
             resultsettable  SQL 조회 결과를 테이블 형태로 출력합니다.
             connection  Connection의 연결과 종료에 관련된 로그를 출력합니다. 커넥션 누수 문제 해결에 도움이 됩니다.
     -->
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <!-- log4jdbc-log4j2 -->
-    <logger name="jdbc.sqlonly" level="DEBUG"/>
-    <logger name="jdbc.sqltiming" level="INFO"/>
+
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.sqltiming" level="DEBUG"/>
     <logger name="jdbc.audit" level="OFF"/>
-    <logger name="jdbc.resultset" level="ERROR"/>
-    <logger name="jdbc.resultsettable" level="ERROR"/>
-    <logger name="jdbc.connection" level="INFO"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="DEBUG"/>
+    <logger name="jdbc.connection" level="OFF   "/>
 
     <!-- Root Logger -->
-    <root level="on">
-        <appender-ref ref="console" />
+    <root level="INFO">
+        <appender-ref ref="consoleINFO" />
     </root>
 </configuration>
