@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="commonHead(title)">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:replace="${title}">매개변수에의한 동적 타이틀</title>
+
+</head>
+<body>
+    <div th:fragment="nav">
+        <div>navbar</div>
+    </div>
+</body>
+</html>
