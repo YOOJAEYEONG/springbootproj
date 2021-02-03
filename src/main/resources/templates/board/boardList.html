@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/common_layout.html"
+      >
+
+<head >
+<!--    <div th:replace="templates/fragments/header :: headerfragment"></div>-->
+    <title>게시판</title>
+</head>
+
+
+<body>ww
+        <th:block layout:fragment="pageCustomBody">
+            <h2>게시판</h2>
+            <div id="jsGrid"></div>
+        </th:block>
+        <th:block layout:fragment="pageCustomScript">
+            <script>
+                $(function() {
+                    $("#jsGrid").jsGrid({
+                        height: "auto",
+                        width: "100%",
+
+                        sorting: true,
+                        paging: false,
+                        autoload: true,
+
+                        controller: {
+                            loadData: function() {
+                                var d = $.Deferred();
+                                $.ajax({
+                                    type: "get",
+                                    url: "/ajax/board/list",
+                                    dataType: "json",
+                                    success : function (data) {
+                                        console.log(data)
+                                        d.resolve(data);
+                                    },
+                                    error : function (request, status, error) {
+                                        console.log(request, status, error)
+                                    },
+                                    complete : function (d) {
+
+                                    }
+                                })
+                                return d.promise();
+                            }
+                        },
+                        fields: [
+                            { name: "seq", type: "number",align: "center" },
+                            { name: "title", type: "text", width: "auto", align: "left" },
+                            { name: "usr_id", type: "text",align: "center" },
+                            { name: "reg_date", type: "text", align: "center" }
+                        ]
+                    });
+                });
+            </script>
+        </th:block>
+<!--        <th:block th:fragment="pageCustomCSS">-->
+
+<!--        </th:block>-->
+</body>
+</html>
