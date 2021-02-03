@@ -12,7 +12,7 @@ public class MainController {
         System.out.println("mainController>");
 
         mv.addObject("boardList", 1);
-        mv.setViewName("static/main");
+        mv.setViewName("main");
         return mv;
     }
 }

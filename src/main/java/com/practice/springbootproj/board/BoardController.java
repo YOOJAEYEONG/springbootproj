@@ -14,6 +14,6 @@ public class BoardController {
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public String boardList(){
-        return "static/board/boardList";
+        return "board/boardList";
     }
 }
