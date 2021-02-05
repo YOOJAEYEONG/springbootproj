@@ -7,7 +7,7 @@
   - Framework : springboot 2.4.1
   - template engine : thymeleaf 3.x , + [thymeleaf layout direct]
   - DBMS : mariaDB 10.x
-  - library : mybatis 2.1.4 , docker(mariaDB 10.x), lombok
+  - library : mybatis 2.1.4 , docker(mariaDB 10.x), lombok, log4j, bootstrap 5.0.0-beta1
   - JRE11
   
 ---
