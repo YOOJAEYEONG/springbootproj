@@ -88,6 +88,7 @@
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<!-- spring boot starter 가 버전관리를 해줌 -->
 			<version>2.5.2</version>
 		</dependency>
 

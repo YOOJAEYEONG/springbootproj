@@ -39,10 +39,10 @@
     <logger name="jdbc.audit" level="OFF"/>
     <logger name="jdbc.resultset" level="OFF"/>
     <logger name="jdbc.resultsettable" level="DEBUG"/>
-    <logger name="jdbc.connection" level="OFF   "/>
+    <logger name="jdbc.connection" level="OFF"/>
 
     <!-- Root Logger -->
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="consoleINFO" />
     </root>
 </configuration>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="templates/layouts/common_layout"
+      >
+<head >
+    <title>게시판</title>
+
+</head>
+<body>
+    <th:block layout:fragment="pageBody">
+        <div class="container -fluid">
+            <div class="row">
+                <h3>자유게시판 <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글</button>
+                </h3>
+                <div id="grid"></div>
+            </div>
+
+            <div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">등록하기</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="insertForm">
+                               <table class="table">
+                                   <tr>
+                                       <th>작성자</th>
+                                       <td><input type="text" name="creatname" maxlength="50"></td>
+                                       <th>비밀번호</th>
+                                       <td><input type="password" name="pw"></td>
+                                   </tr>
+                                   <tr>
+                                       <th>제목</th>
+                                       <td><input type="text" name="title" maxlength="500"></td>
+                                   </tr>
+
+                                   <tr>
+                                       <td colspan="4"><div id="editor"></div></td>
+                                   </tr>
+                               </table>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</body>
+<th:block layout:fragment="pageScript">
+    <script src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
+    <script>
+        $("#btnInput").on('shown.bs.modal', function () {
+            $(this).focus();
+        });
+        $("#ajaxInsert").on("click", ajaxInsert);
+
+        const editor = new toastui.Editor({
+            //height: '500px',
+            el : document.querySelector("#editor"),
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            language: 'ko-KR',
+        });
+        //editor.setMarkdown('');//실행시 디폴트값 </br> 없애기
+        //editor.getHtml();
+
+
+        const Grid = tui.Grid;
+        Grid.applyTheme('striped'); // Call API of static method
+        const instance = new Grid({
+            el: document.getElementById('grid'), // Container element
+            columns: [
+                {
+                    header: 'No',
+                    name: 'seq'
+                },
+                {
+                    header: '제목',
+                    name: 'title'
+                },
+                {
+                    header: '아이디',
+                    name: 'usrid'
+                },
+                {
+                    header: '등록일',
+                    name: 'regdate'
+                }
+            ],
+            data: [
+                {
+                    name: 'Beautiful Lies',
+                    artist: 'Birdy',
+                    release: '2016.03.26',
+                    genre: 'Pop'
+                }
+            ]
+        });
+
+        //리스트조회
+        $.ajax({
+            type: "get",
+            url: "/ajax/board/list",
+            dataType: "json",
+            success : function (data) {
+                console.log(data)
+                instance.resetData(data.response); // Call API of instance's public method
+            },
+            error : function (request, status, error) {
+                console.log(request, status, error)
+            },
+            complete : function (d) {
+
+            }
+        });
+
+        function ajaxInsert() {
+            var insertForm = $("#insertForm").jform();
+            insertForm = JSON.parse(insertForm);
+            insertForm.content = editor.getHtml();
+            console.log("ajaxInsert",insertForm);
+
+            $.ajax({
+                type: "post",
+                url: "/ajax/board/insert",
+                dataType: "json",
+                data : insertForm,
+
+                success : function (data) {
+                    console.log('ajaxInsert',data);
+
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+    </script>
+</th:block>
+<th:block th:fragment="pageCSS">
+    <style>
+        textarea{width: -moz-available;}
+    </style>
+</th:block>
+</html>

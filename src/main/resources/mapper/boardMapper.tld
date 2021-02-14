@@ -3,8 +3,34 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.practice.springbootproj.board.BoardMapper">
-    <select id="selectBoardList" resultType="com.practice.springbootproj.model.BoardDTO">
+<mapper namespace="com.practice.springbootproj.board.BoardDAO">
+    <select id="selectBoardList" resultType="com.practice.springbootproj.board.model.BoardListDTO">
         SELECT * FROM boards
     </select>
+    <insert id="insertBoardPost" parameterType="com.practice.springbootproj.board.model.BoardInsertDTO">
+        INSERT INTO BOARDS
+            (
+                SEQ
+                ,USRID
+                ,TITLE
+                ,CONTENTS
+                ,REPLYIDX
+                ,REPLYGRP
+                ,REPLYDEAPTH
+                ,BOARDNAME
+                ,REGDATE
+            )
+            VALUES
+            (
+             NEXTVAL(BOARDS_SEQ)
+             ,#{usrid}
+             ,#{title}
+             ,#{contents}
+             ,#{replyidx}
+             ,#{replygrp}
+             ,#{replydeapth}
+             ,#{boardname}
+             SYSDATE
+            )
+    </insert>
 </mapper>
