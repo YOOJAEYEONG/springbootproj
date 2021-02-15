@@ -9,11 +9,11 @@ import org.apache.ibatis.type.Alias;
 public class BoardListDTO {
 
     private int seq;
-    private String usrid;
+    private String userName;
     private String title;
-    private int replyidx;/*댓글의 순서*/
-    private int replygrp; /*댓글의 원본글의 시퀀스*/
-    private int replydepth; /*댓글의 댓글을 구분*/
-    private String boardname; /*게시판 종류*/
-    private String regdate; //CURRENT_TIMESTAMP
+    private int replyIdx;/*댓글의 순서*/
+    private int replyGroupSeq; /*댓글의 원본글의 시퀀스*/
+    private int replyDepth; /*댓글의 댓글을 구분*/
+    private String boardName; /*게시판 종류*/
+    private String regDate; //CURRENT_TIMESTAMP
 }

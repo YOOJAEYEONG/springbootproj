@@ -13,7 +13,7 @@ public interface BoardDAO {
 
     ArrayList<BoardListDTO> selectBoardList();
 
-    BoardInsertDTO insertBoardPost();
+    Integer insertBoardPost(BoardInsertDTO boardInsertDTO);
 
     BoardDetailDTO selectBoardPost();
 

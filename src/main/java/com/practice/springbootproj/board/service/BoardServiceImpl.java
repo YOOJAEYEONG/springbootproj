@@ -1,6 +1,7 @@
 package com.practice.springbootproj.board.service;
 
 import com.practice.springbootproj.board.BoardDAO;
+import com.practice.springbootproj.board.model.BoardDetailDTO;
 import com.practice.springbootproj.board.model.BoardInsertDTO;
 import com.practice.springbootproj.board.model.BoardListDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,10 @@ public class BoardServiceImpl implements BoardService{
     private BoardDAO boardDAO;
 
 
-
+    /**
+     * 리스트조회
+     * @return
+     */
     @Override
     public List<BoardListDTO> selectBoardList(){
         List<BoardListDTO> list = boardDAO.selectBoardList();
@@ -27,20 +31,24 @@ public class BoardServiceImpl implements BoardService{
         return list;
     }
 
+    /**
+     * 게시글 상세보기
+     * @return
+     */
     @Override
-    public BoardInsertDTO selectBoardPost() {
-        return boardDAO.insertBoardPost();
+    public BoardDetailDTO selectBoardPost() {
+        return boardDAO.selectBoardPost();
+    }
+
+    /**
+     * 새글 & 답글 등록
+     * @param boardInsertDTO
+     * @return
+     */
+    @Override
+    public Integer insertBoardPost(BoardInsertDTO boardInsertDTO) {
+        return boardDAO.insertBoardPost(boardInsertDTO);
     }
 
 
-
-    @Override
-    public BoardInsertDTO insertBoardPost(BoardInsertDTO boardInsertDTO) {
-        return null;
-    }
-
-    @Override
-    public Integer deleteBoardPost() {
-        return null;
-    }
 }

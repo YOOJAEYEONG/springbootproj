@@ -5,32 +5,39 @@
 
 <mapper namespace="com.practice.springbootproj.board.BoardDAO">
     <select id="selectBoardList" resultType="com.practice.springbootproj.board.model.BoardListDTO">
-        SELECT * FROM boards
+        SELECT * FROM BOARDS
     </select>
     <insert id="insertBoardPost" parameterType="com.practice.springbootproj.board.model.BoardInsertDTO">
         INSERT INTO BOARDS
             (
                 SEQ
-                ,USRID
+                ,USER_NAME
                 ,TITLE
+                ,PW
                 ,CONTENTS
-                ,REPLYIDX
-                ,REPLYGRP
-                ,REPLYDEAPTH
-                ,BOARDNAME
-                ,REGDATE
+                ,REPLY_IDX
+                ,REPLY_GROUP_SEQ
+                ,REPLY_DEPTH
+                ,BOARD_NAME
             )
             VALUES
             (
              NEXTVAL(BOARDS_SEQ)
-             ,#{usrid}
+             ,#{userName}
              ,#{title}
+             ,#{pw}
              ,#{contents}
-             ,#{replyidx}
-             ,#{replygrp}
-             ,#{replydeapth}
-             ,#{boardname}
-             SYSDATE
+             <if test='replyGroupSeq != ""'>/* 댓글을 등록하는경우 */
+                ,(${replyIdx} + 1)
+                ,#{replyGroupSeq}
+                ,#{replyDepth}
+             </if>
+             <if test='replyGroupSeq == ""'>/* 새글을 등록하는 경우 */
+                ,0 /* 인덱스 0부터 */
+                ,0 /* 새글인경우 부모글이 없으므로 0으로 설정함 */
+                ,0 /* 댓글 깊이 0 부터 */
+             </if>
+             ,#{boardName}
             )
     </insert>
 </mapper>

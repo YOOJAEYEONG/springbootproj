@@ -27,10 +27,13 @@
                         </div>
                         <div class="modal-body">
                             <form id="insertForm">
-                               <table class="table">
+                                <input type="hidden" name="replyDepth">
+                                <input type="hidden" name="replyIdx">
+                                <input type="hidden" name="replyGroupSeq">
+                                <table class="table">
                                    <tr>
                                        <th>작성자</th>
-                                       <td><input type="text" name="creatname" maxlength="50"></td>
+                                       <td><input type="text" name="userName" maxlength="50"></td>
                                        <th>비밀번호</th>
                                        <td><input type="password" name="pw"></td>
                                    </tr>
@@ -42,7 +45,7 @@
                                    <tr>
                                        <td colspan="4"><div id="editor"></div></td>
                                    </tr>
-                               </table>
+                                </table>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -109,7 +112,7 @@
         //리스트조회
         $.ajax({
             type: "get",
-            url: "/ajax/board/list",
+            url: "/ajax/board/freeBoard/list",
             dataType: "json",
             success : function (data) {
                 console.log(data)
@@ -126,15 +129,14 @@
         function ajaxInsert() {
             var insertForm = $("#insertForm").jform();
             insertForm = JSON.parse(insertForm);
-            insertForm.content = editor.getHtml();
+            insertForm.contents = editor.getHtml();
             console.log("ajaxInsert",insertForm);
 
             $.ajax({
                 type: "post",
-                url: "/ajax/board/insert",
+                url: "/ajax/board/freeBoard/insert",
                 dataType: "json",
                 data : insertForm,
-
                 success : function (data) {
                     console.log('ajaxInsert',data);
 
