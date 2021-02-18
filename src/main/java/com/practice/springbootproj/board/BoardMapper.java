@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 
 @Mapper
-public interface BoardDAO {
+public interface BoardMapper {
 
     ArrayList<BoardListDTO> selectBoardList();
 

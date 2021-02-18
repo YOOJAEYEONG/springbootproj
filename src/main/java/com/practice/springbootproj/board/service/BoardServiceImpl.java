@@ -1,6 +1,6 @@
 package com.practice.springbootproj.board.service;
 
-import com.practice.springbootproj.board.BoardDAO;
+import com.practice.springbootproj.board.BoardMapper;
 import com.practice.springbootproj.board.model.BoardDetailDTO;
 import com.practice.springbootproj.board.model.BoardInsertDTO;
 import com.practice.springbootproj.board.model.BoardListDTO;
@@ -15,7 +15,7 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService{
 
     @Autowired
-    private BoardDAO boardDAO;
+    private BoardMapper boardMapper;
 
 
     /**
@@ -24,7 +24,7 @@ public class BoardServiceImpl implements BoardService{
      */
     @Override
     public List<BoardListDTO> selectBoardList(){
-        List<BoardListDTO> list = boardDAO.selectBoardList();
+        List<BoardListDTO> list = boardMapper.selectBoardList();
         log.info("리스트",list.toString());
 
         //System.out.println("DB반환값"+list);
@@ -37,7 +37,7 @@ public class BoardServiceImpl implements BoardService{
      */
     @Override
     public BoardDetailDTO selectBoardPost() {
-        return boardDAO.selectBoardPost();
+        return boardMapper.selectBoardPost();
     }
 
     /**
@@ -47,7 +47,7 @@ public class BoardServiceImpl implements BoardService{
      */
     @Override
     public Integer insertBoardPost(BoardInsertDTO boardInsertDTO) {
-        return boardDAO.insertBoardPost(boardInsertDTO);
+        return boardMapper.insertBoardPost(boardInsertDTO);
     }
 
 
