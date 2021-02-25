@@ -5,15 +5,17 @@
   - OS : win10 
   - IDE : intellij
   - Framework : springboot 2.4.1
-  - template engine : thymeleaf 3.x , + [thymeleaf layout direct]
+  - template engine : thymeleaf 3.x , thymeleaf layout direct
   - DBMS : mariaDB 10.x
-  - library : 
-      mybatis 2.1.4,  
-      docker(mariaDB 10.x), 
-      lombok, 
-      log4j, 
-      bootstrap 5.0.0-beta1
-      Toast Grid 4.10.0, Toast Editor 2.0
+  - library :
+    - jQuery v3.5.1
+    - jQuery UI v1.12.1
+    - mybatis 2.1.4
+    - docker(mariaDB 10.x) 
+    - lombok 
+    - log4j
+    - bootstrap 5.0.0-beta1
+    - Toast Grid 4.10.0, Toast Editor 2.0
       
   - JRE11
   
