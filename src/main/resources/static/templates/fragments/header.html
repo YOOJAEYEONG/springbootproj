@@ -6,7 +6,7 @@
             <title>Thymeleaf Fragment</title>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <link rel="icon" type="image/png" sizes="32x32" th:href="@{/img/favicon-32x32.png}">
-            <link   title="bootstrap 5.0 CSS" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+            <link title="bootstrap 5.0 CSS" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
             <script title="bootstrap 5.0 JS" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
 
@@ -20,9 +20,15 @@
 
 
 
-            <link   title="jQuery-UI CSS" rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-            <script title="jQuery-UI JS" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--            <link   title="jQuery-UI CSS" rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
+<!--            <script title="jQuery-UI JS" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+            <link   title="jQuery-UI CSS" rel="stylesheet" th:href="@{/css/jquery-ui.theme.min.css}">
+            <script title="jQuery-UI JS" th:src="@{/js/jquery-ui.min.js}"></script>
 
+            <!-- Toast UI : pagination -->
+            <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+            <script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+            <script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
             <!-- Toast grid -->
             <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
             <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
@@ -30,8 +36,8 @@
 
             <script title="jform 1.1.1" th:src="@{/lib/json-form-converter-jform/dist/jform.js}"></script>
 
-            <link rel="preconnect" href="https://fonts.gstatic.com">
-            <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+            <link defer rel="preconnect" href="https://fonts.gstatic.com">
+            <link defer href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
             <script type="text/javascript" th:src="@{/js/common.js}"></script>
             <link type="text/css" th:href="@{/css/common.css}"/>
