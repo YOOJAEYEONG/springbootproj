@@ -8,63 +8,126 @@
 <head >
     <title>게시판</title>
 
+
+
 </head>
 <body>
     <th:block layout:fragment="pageBody">
-        <div class="container -fluid">
+        <div class="container-fluid">
             <div class="row">
-                <h3>자유게시판 <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글</button>
-                </h3>
+                <h3>자유게시판 <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글</button></h3>
+                <form id="searchForm">
+                    <input type="hidden" title="현재페이지번호" name="pageNum" value="1">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Per Page</span>
+                        <select name="pageSize" class="form-select">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="input-group-text">제목</span>
+                        <input type="text" name="title" class="form-control" autocomplete="off">
+                        <span class="input-group-text">이름</span>
+                        <input type="text" name="userName" class="form-control" autocomplete="off">
+                    </div>
+                </form>
                 <div id="grid"></div>
+                <div id="pagination" class="tui-pagination"></div>
             </div>
+        </div> <!-- container-fluid -->
 
-            <div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-                <div class="modal-dialog modal-xl modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">등록하기</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="insertForm">
-                                <input type="hidden" name="replyDepth">
-                                <input type="hidden" name="replyIdx">
-                                <input type="hidden" name="replyGroupSeq">
-                                <table class="table">
-                                   <tr>
-                                       <th>작성자</th>
-                                       <td><input type="text" name="userName" maxlength="50"></td>
-                                       <th>비밀번호</th>
-                                       <td><input type="password" name="pw"></td>
-                                   </tr>
-                                   <tr>
-                                       <th>제목</th>
-                                       <td><input type="text" name="title" maxlength="500"></td>
-                                   </tr>
-
-                                   <tr>
-                                       <td colspan="4"><div id="editor"></div></td>
-                                   </tr>
-                                </table>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
-                        </div>
+        <div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">등록하기</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="insertForm">
+                            <input type="hidden" name="replyDepth">
+                            <input type="hidden" name="replyIdx">
+                            <input type="hidden" name="replyGroupId">
+                            <table class="table">
+                                <tr>
+                                    <th>작성자</th>
+                                    <td><input type="text" name="userName" maxlength="50" class="form-control" autocomplete="off"></td>
+                                    <th>비밀번호</th>
+                                    <td><input type="password" name="pw" class="form-control" autocomplete="off"></td>
+                                </tr>
+                                <tr>
+                                    <th>제목</th>
+                                    <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><div id="editor"></div></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> <!-- insertModal -->
+
+        <div class="modal" id="detailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">상세내용</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateForm">
+                            <input type="hidden" name="replyDepth">
+                            <input type="hidden" name="replyIdx">
+                            <input type="hidden" name="replyGroupId">
+                            <table class="table table-sm table-bordered">
+                                <tr>
+                                    <th>작성자</th>
+                                    <td id="userName"></td>
+                                </tr>
+                                <tr>
+                                    <th>제목</th>
+                                    <td colspan="3" id="title"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><div id="detailViewer"></div></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
+                        <button type="button" id="btnUpdate" class="btn btn-primary">수정</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- detailModal -->
     </th:block>
 </body>
 <th:block layout:fragment="pageScript">
     <script src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
-    <script>
-        $("#btnInput").on('shown.bs.modal', function () {
-            $(this).focus();
+
+    <script defer type="text/javascript">
+        "use strict";
+        let grid;
+        let Grid = tui.Grid;
+        let pagination;
+        let dbData;
+        const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), {
+            backdrop:"static"//모달창 외부 클릭시 창 닫힘 여부
         });
-        $("#ajaxInsert").on("click", ajaxInsert);
+        const viewer = toastui.Editor.factory({
+            el: document.querySelector('#detailViewer'),
+            viewer: true,
+            initialValue: ''//초기 내용
+        });
 
         const editor = new toastui.Editor({
             //height: '500px',
@@ -77,55 +140,143 @@
         //editor.getHtml();
 
 
-        const Grid = tui.Grid;
-        Grid.applyTheme('striped'); // Call API of static method
-        const instance = new Grid({
-            el: document.getElementById('grid'), // Container element
-            columns: [
-                {
-                    header: 'No',
-                    name: 'seq'
-                },
-                {
-                    header: '제목',
-                    name: 'title'
-                },
-                {
-                    header: '아이디',
-                    name: 'usrid'
-                },
-                {
-                    header: '등록일',
-                    name: 'regdate'
-                }
-            ],
-            data: [
-                {
-                    name: 'Beautiful Lies',
-                    artist: 'Birdy',
-                    release: '2016.03.26',
-                    genre: 'Pop'
-                }
-            ]
+        ajaxSelectList();//리스트 조회
+
+
+
+        $("#btnInput").on('shown.bs.modal', function () {
+            $(this).focus();
+        });
+        $("#ajaxInsert").on("click", ajaxInsert);
+        $("#btnUpdate").on("click",function () {
+           $("#detailModal").modal()
+        });
+        $("#searchForm").on("keyup",function (evt) {
+           if (evt.key == "Enter"){
+               $("#searchForm input[name=pageNum]").val(1);
+               ajaxSelectList(true);
+           }
+        });
+        $("#searchForm select[name=pageSize]").on("change",function (evt) {
+            grid.setPerPage(Number.parseInt(evt.target.value));
         });
 
-        //리스트조회
-        $.ajax({
-            type: "get",
-            url: "/ajax/board/freeBoard/list",
-            dataType: "json",
-            success : function (data) {
-                console.log(data)
-                instance.resetData(data.response); // Call API of instance's public method
-            },
-            error : function (request, status, error) {
-                console.log(request, status, error)
-            },
-            complete : function (d) {
 
+        /**
+         * 리스트생성
+         * @param {Object} data : DBListData
+         * */
+        function createGrid(data) {
+            var options = {
+                totalItems: data.pagination.totalCount,
+                itemsPerPage: $("select[name=pageSize]").val(),
+                visiblePages: 10, //페이지버튼 갯수 설정
+                page: $("#searchForm input[name=pageNum]").val(),
+                centerAlign: true,
             }
-        });
+            pagination = new tui.Pagination('pagination', options);
+            //페이지버튼 클릭시
+            pagination.on('beforeMove', function(evt) {
+                var currentPage = evt.page;
+                $("#searchForm input[name=pageNum]").val(currentPage);
+                ajaxSelectList(false);
+            });
+            Grid.applyTheme('clean',{row:{hover:{background:'whitesmoke'}}}); // Call API of static method
+            grid = new tui.Grid({
+                el: document.getElementById('grid') // Container element
+                ,scrollY : false
+                ,scrollX : true
+                ,data : data.contents
+                ,onGridUpdated : function (evt) {
+                    console.log(evt);
+                }
+                ,columns: [
+                    {
+                        header: 'No',
+                        name: 'rnum',
+                        width: "auto",
+                    },
+                    {
+                        header: '제목',
+                        name: 'title',
+                        resizable : true
+                        ,renderer:{
+                            styles :{
+                                cursor : "pointer"
+                            }
+                        }
+                      },
+                    {
+                        header: '이름',
+                        name: 'userName',
+                        width: 100,
+                        resizable : true
 
+                    },
+                    {
+                        header: '등록일',
+                        name: 'updateDate',
+                        width: 80,
+                        // renderer:{
+                        //     styles :{
+                        //         width : "auto"
+                        //     }
+                        // }
+                    }
+                ]
+                // ,pageOptions: {
+                //     useClient: true, //백엔드 연동 제거시 true
+                //     perPage: 10
+                // }
+            });
+            grid.on("click",function (evt) {
+                console.log(evt);
+                if (evt.targetType == "cell"){
+                    ajaxSelectBoardPost(dbData[evt.rowKey].postId);
+                    detailModal.show();
+                }
+            });
+            $("#grid tr:hover").css('boxShadow','whitesmoke');
+        }
+
+
+
+        function ajaxSelectList(resetFlag) {
+            /**
+             * 리스트조회
+             * */
+            $.ajax({
+                type: "get",
+                url: "/ajax/board/freeBoard/list",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                data : JSON.parse($("#searchForm").jform()),
+                success : function (data) {
+                    console.log(data);
+                    if (data.result == true){
+                        dbData = data.data.contents;
+                        if(grid){
+                            grid.resetData(data.data.contents); // Call API of instance's public method
+                            if (resetFlag){
+                                pagination.reset(data.data.pagination.totalCount);
+                            }
+                        }else{
+                            createGrid(data.data);
+                        }
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                },
+                complete : function (d) {
+
+                }
+            });
+        }
+
+        /**
+         * 글쓰기
+         */
         function ajaxInsert() {
             var insertForm = $("#insertForm").jform();
             insertForm = JSON.parse(insertForm);
@@ -134,12 +285,43 @@
 
             $.ajax({
                 type: "post",
-                url: "/ajax/board/freeBoard/insert",
+                url: "/ajax/board/freeBoard",
                 dataType: "json",
                 data : insertForm,
                 success : function (data) {
                     console.log('ajaxInsert',data);
+                    if (data.result == true){
+                        alert("등록되었습니다.");
+                        $("#insertModal .btn-close").trigger("click");
+                        ajaxSelectList(true);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
 
+        function ajaxSelectBoardPost(postId){
+            $.ajax({
+                type: "get",
+                url: "/ajax/board/freeBoard/"+postId,
+                dataType: "json",
+                // data : {postId : postId},
+                success : function (data) {
+                    console.log('ajaxSelectBoardPost',data);
+                    if (data.result == true){
+                        data = data.data;
+                        for (const datum in data) {
+                            let value = data[datum];
+                            console.log(datum,value);
+                            if (datum == "contents"){
+                                viewer.setMarkdown(value);
+                            }else{
+                                $("#detailModal").find("#"+datum).html(value);
+                            }
+                        }
+                    }
                 },
                 error : function (request, status, error) {
                     console.log(request, status, error)

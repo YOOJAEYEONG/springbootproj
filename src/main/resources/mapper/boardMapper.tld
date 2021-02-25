@@ -4,19 +4,60 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.practice.springbootproj.board.BoardMapper">
-    <select id="selectBoardList" resultType="com.practice.springbootproj.board.model.BoardListDTO">
-        SELECT * FROM BOARDS
+    <select id="selectBoardTotalCount" parameterType="map" resultType="integer">
+        SELECT COUNT (1) FROM BOARDS
+            <where>
+                AND BOARD_NAME = #{boardName} AND REPLY_GROUP_ID = 0
+                <if test='title != null and title != ""'>
+                    AND TITLE LIKE '%' #{title} '%'
+                </if>
+                <if test='userName != null and userName != ""'>
+                    AND USER_NAME LIKE '%' #{userName} '%'
+                </if>
+            </where>
     </select>
+
+    <select id="selectBoardList" parameterType="map" resultType="com.practice.springbootproj.board.model.BoardListDTO">
+        SELECT
+            B.*
+             ,(SELECT COUNT(1) FROM BOARDS WHERE REPLY_GROUP_ID = B.POST_ID ) AS REPLY_CNT
+        FROM
+            (
+                SELECT
+                    ROW_NUMBER() OVER (PARTITION BY UPDATE_DATE ORDER BY POST_ID DESC) AS RNUM
+                    ,POST_ID
+                    ,USER_NAME
+                    ,TITLE
+                    ,REPLY_GROUP_ID
+                    ,BOARD_NAME
+                    ,UPDATE_DATE
+                FROM BOARDS
+                <where>
+                    REPLY_GROUP_ID = 0
+                    AND BOARD_NAME = #{boardName}
+                    <if test='title != null and title != ""'>
+                        AND TITLE LIKE '%' #{title} '%'
+                    </if>
+                    <if test='userName != null and userName != ""'>
+                        AND USER_NAME LIKE '%' #{userName} '%'
+                    </if>
+                </where>
+                ORDER BY POST_ID DESC
+                 LIMIT ${startNum}, ${pageSize}
+                /*(PAGENUM-1)*PAGESIZE, (PAGESIZE)*/
+            ) B
+    </select>
+
     <insert id="insertBoardPost" parameterType="com.practice.springbootproj.board.model.BoardInsertDTO">
         INSERT INTO BOARDS
             (
-                SEQ
+                 POST_ID
                 ,USER_NAME
                 ,TITLE
                 ,PW
                 ,CONTENTS
                 ,REPLY_IDX
-                ,REPLY_GROUP_SEQ
+                ,REPLY_GROUP_ID
                 ,REPLY_DEPTH
                 ,BOARD_NAME
             )
@@ -27,12 +68,12 @@
              ,#{title}
              ,#{pw}
              ,#{contents}
-             <if test='replyGroupSeq != ""'>/* 댓글을 등록하는경우 */
+             <if test='replyGroupId != ""'>/* 댓글을 등록하는경우 */
                 ,(${replyIdx} + 1)
-                ,#{replyGroupSeq}
+                ,#{replyGroupId}
                 ,#{replyDepth}
              </if>
-             <if test='replyGroupSeq == ""'>/* 새글을 등록하는 경우 */
+             <if test='replyGroupId == ""'>/* 새글을 등록하는 경우 */
                 ,0 /* 인덱스 0부터 */
                 ,0 /* 새글인경우 부모글이 없으므로 0으로 설정함 */
                 ,0 /* 댓글 깊이 0 부터 */
@@ -40,4 +81,30 @@
              ,#{boardName}
             )
     </insert>
+
+    <select id="selectBoardPost" parameterType="map" resultType="com.practice.springbootproj.board.model.BoardDetailDTO">
+        SELECT
+            POST_ID
+             ,USER_NAME
+             ,TITLE
+             ,CONTENTS
+             ,REPLY_IDX
+             ,REPLY_GROUP_ID
+             ,REPLY_DEPTH
+             ,BOARD_NAME
+             ,UPDATE_DATE
+        FROM BOARDS WHERE POST_ID = #{postId};
+    </select>
+    <!--
+    POST_ID	int(10) unsigned
+    USER_NAME	varchar(20)
+    PW	varchar(20)
+    TITLE	varchar(500)
+    CONTENTS	text
+    REPLY_IDX	int(10) unsigned
+    REPLY_GROUP_SEQ	int(10) unsigned
+    REPLY_DEPTH	int(10) unsigned
+    BOARD_NAME	varchar(50)
+    UPDATE_DATE	date
+    -->
 </mapper>

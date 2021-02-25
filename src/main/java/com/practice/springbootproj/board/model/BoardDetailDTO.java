@@ -7,12 +7,13 @@ import org.apache.ibatis.type.Alias;
 @Alias("BoardDetailDTO")
 public class BoardDetailDTO {
 
-    private int seq;
-    private String usr_id;
+    private Integer postId;
+    private String userName;
     private String title;
-    private int reply_idx;/*댓글의 순서*/
-    private int reply_grp; /*댓글의 원본글의 시퀀스*/
-    private int reply_depth; /*댓글의 댓글을 구분*/
-    private String board_name; /*게시판 종류*/
-    private String reg_date; //CURRENT_TIMESTAMP
+    private String contents;
+    private Integer replyIdx;/*댓글의 순서*/
+    private Integer replyGroupId; /*댓글의 원본글의 시퀀스*/
+    private Integer replyDepth; /*댓글의 댓글을 구분*/
+    private String boardName; /*게시판 종류*/
+    private String updateDate; //CURRENT_TIMESTAMP
 }

@@ -1,15 +1,14 @@
 package com.practice.springbootproj.board.service;
 
-import com.practice.springbootproj.board.model.BoardDetailDTO;
 import com.practice.springbootproj.board.model.BoardInsertDTO;
-import com.practice.springbootproj.board.model.BoardListDTO;
+import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+import java.util.Map;
 
 
 public interface BoardService{
 
-    List<BoardListDTO> selectBoardList();
-    BoardDetailDTO selectBoardPost();
+    ResponseEntity<Object> selectBoardList(Map<String,Object> params);
+    ResponseEntity<Object> selectBoardPost(Map<String,String> params);
     Integer insertBoardPost(BoardInsertDTO boardInsertDTO);
 }

@@ -6,15 +6,17 @@ import com.practice.springbootproj.board.model.BoardListDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 @Mapper
 public interface BoardMapper {
 
-    ArrayList<BoardListDTO> selectBoardList();
+    ArrayList<BoardListDTO> selectBoardList(Map<String,Object> params);
 
     Integer insertBoardPost(BoardInsertDTO boardInsertDTO);
 
-    BoardDetailDTO selectBoardPost();
+    BoardDetailDTO selectBoardPost(Map<String,String> params);
 
+    Integer selectBoardTotalCount(Map<String, Object> params);
 }

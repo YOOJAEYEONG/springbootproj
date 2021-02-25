@@ -21,7 +21,7 @@ public class BoardInsertDTO {
     @Nullable
     private String replyDepth; /*댓글의 댓글을 구분*/
     @Nullable
-    private String replyGroupSeq; /*댓글의 원본글의 시퀀스*/
+    private String replyGroupId; /*댓글의 원본글의 시퀀스*/
     @NonNull
     private String boardName; /*게시판 종류*/
 }
