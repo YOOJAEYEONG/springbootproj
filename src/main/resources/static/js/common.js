@@ -1,6 +1,10 @@
 console.log("common.js");
 
-
+$(function () {
+    $('.modal-dialog').draggable({
+        handle: ".modal-header"
+    });
+});
 
 
 
