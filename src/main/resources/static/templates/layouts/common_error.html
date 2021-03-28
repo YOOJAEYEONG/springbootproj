@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <th:block th:replace="templates/fragments/header :: headerfragment"></th:block>
+    <title layout:title-pattern="$CONTENT_TITLE :: $DECORATOR_TITLE">ERROR</title>
+
+</head>
+<body>
+<!--    <div th:replace="templates/fragments/nav :: navfragment"></div>-->
+    <div class="row contents">
+        <div class="col-2 bg-light">
+            <div th:replace="templates/fragments/sidemenu :: sidemenufragment"></div>
+        </div>
+        <div class="col-10">
+            <th:block layout:fragment="pageBody"></th:block>
+            <th:block layout:fragment="pageScript"></th:block>
+            <th:block layout:fragment="pageCSS"></th:block>
+        </div>
+    </div>
+    <div class="row bg-dark">
+        <div th:replace="templates/fragments/footer :: footerfragment"></div>
+    </div>
+</body>
+<style>
+    .contents{min-height: 720px;}
+</style>
+</html>

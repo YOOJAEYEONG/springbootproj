@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.logging.ErrorManager;
+
 
 /**
  * <pre>
@@ -25,17 +27,19 @@ public class GlobalExceptionHandler {
   @Autowired
   AES256Helper AES256Helper;
 
-//  /**
-//   * default 처리 로직이 들어간다.
-//   * @param e
-//   * @return {String} 페이지경로
-//   */
-//  @ExceptionHandler
-//  protected String handlerDefault(Exception e){
-//    log.error("handlerDefault : {}",e);
+  /**
+   * default 처리 로직이 들어간다.
+   * @param e
+   * @return {String} 페이지경로
+   */
+  @ExceptionHandler
+  protected String handlerDefault(Exception e){
+    log.error("handlerDefault : {}",e);
 //    fianl ErrorResponse response = ErrorResponse.of(ErrorCode.INTERVAL_SERVER_ERROR);
-//    return "/common/defaultErrorPage";
-//  }
+    ErrorManager errorManager = new ErrorManager();
+//    errorManager.error("exception",e, CefLoadHandler.ErrorCode.ERR_ADDRESS_UNREACHABLE);
+    return "/template/common_error";
+  }
 
 //  /**
 //   * BusinessException 발생시 처리 로직이 들어간다.
