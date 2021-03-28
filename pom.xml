@@ -36,7 +36,10 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>2.1.4</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -75,6 +78,7 @@
 		</dependency>
 
 
+
 		<!--
 		log4jdbc
 		https://mvnrepository.com/artifact/com.integralblue/log4jdbc-spring-boot-starter -->
@@ -84,6 +88,7 @@
 			<version>2.0.0</version>
 		</dependency>
 
+
 		<!-- https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect -->
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
@@ -91,6 +96,17 @@
 			<!-- spring boot starter 가 버전관리를 해줌 -->
 			<version>2.5.2</version>
 		</dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>5.3.2</version>
+    </dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+
 
 
 	</dependencies>
