@@ -3,13 +3,9 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="templates/layouts/common_layout"
-      >
+      layout:decorate="templates/layouts/common_layout">
 <head >
     <title>게시판</title>
-
-
-
 </head>
 <body>
     <th:block layout:fragment="pageBody">
@@ -31,6 +27,16 @@
                         <input type="text" name="title" class="form-control" autocomplete="off">
                         <span class="input-group-text">이름</span>
                         <input type="text" name="userName" class="form-control" autocomplete="off">
+                        <span class="input-group-text">등록일검색:</span>
+<!--                        <input type="text" name="startDate" class="date-picker form-control" autocomplete="off" placeholder="시작일">-->
+<!--                        <span class="input-group-text">-</span>-->
+<!--                        <input type="text" name="endDate" class="date-picker form-control" autocomplete="off" placeholder="종료일">-->
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="tui-date-picker-target" aria-label="Date-Time">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="tui-date-picker-container" style="margin-top: -1px;"></div>
+
                     </div>
                 </form>
                 <div id="grid"></div>
@@ -38,77 +44,121 @@
             </div>
         </div> <!-- container-fluid -->
 
-        <div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">등록하기</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="insertForm">
-                            <input type="hidden" name="replyDepth">
-                            <input type="hidden" name="replyIdx">
-                            <input type="hidden" name="replyGroupId">
-                            <table class="table">
-                                <tr>
-                                    <th>작성자</th>
-                                    <td><input type="text" name="userName" maxlength="50" class="form-control" autocomplete="off"></td>
-                                    <th>비밀번호</th>
-                                    <td><input type="password" name="pw" class="form-control" autocomplete="off"></td>
-                                </tr>
-                                <tr>
-                                    <th>제목</th>
-                                    <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4"><div id="editor"></div></td>
-                                </tr>
-                            </table>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
+<div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">등록하기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div> <!-- insertModal -->
+            <div class="modal-body">
+                <form id="insertForm">
+                    <table class="table">
+                        <tr>
+                            <th>작성자</th>
+                            <td><input type="text" name="userName" maxlength="50" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
+                            <th>비밀번호</th>
+                            <td><input type="password" name="pw" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><div id="editorInsert"></div></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div> <!-- insertModal -->
 
-        <div class="modal" id="detailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">상세내용</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="updateForm">
-                            <input type="hidden" name="replyDepth">
-                            <input type="hidden" name="replyIdx">
-                            <input type="hidden" name="replyGroupId">
-                            <table class="table table-sm table-bordered">
-                                <tr>
-                                    <th>작성자</th>
-                                    <td id="userName"></td>
-                                </tr>
-                                <tr>
-                                    <th>제목</th>
-                                    <td colspan="3" id="title"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4"><div id="detailViewer"></div></td>
-                                </tr>
-                            </table>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
-                        <button type="button" id="btnUpdate" class="btn btn-primary">수정</button>
-                    </div>
-                </div>
+<div class="modal" id="detailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">상세내용</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div> <!-- detailModal -->
+            <div class="modal-body">
+                <table class="table table-sm table-bordered">
+                    <colgroup>
+                        <col width="20%">
+                        <col>
+                    </colgroup>
+                    <tr>
+                        <th>작성자</th>
+                        <td name="userName"></td>
+                    </tr>
+                    <tr>
+                        <th>제목</th>
+                        <td name="title"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="detailViewer" ></div>
+                        </td>
+                    </tr>
+                </table>
+                <form id="replyBox" onsubmit="return false;">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">댓글입력 :</span>
+                        <input type="text" name="title" class="form-control" style="width: 40%;" autocomplete="off">
+                        <input type="password" name="pw" class="mr-4 form-control" placeholder="비밀번호" autocomplete="off" maxlength="20">
+                        <button id="ajaxBoardReplyPost" class="btn btn-outline-dark" >등록</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
+                <button type="button" id="btnUpdate" class="btn btn-primary">수정</button>
+            </div>
+        </div>
+    </div>
+</div> <!-- detailModal -->
+
+<div class="modal" id="updateModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm">
+                    <input type="hidden" name="postId">
+                    <table class="table">
+                        <tr>
+                            <th>작성자</th>
+                            <td><input type="text" name="userName" maxlength="50" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
+                            <th>비밀번호</th>
+                            <td><input type="password" name="pw" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><div id="editorUpdate"></div></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
+                <button type="button" id="ajaxUpdate" class="btn btn-primary">저장</button>
+            </div>
+        </div>
+    </div>
+</div> <!-- updateModal -->
+
+
     </th:block>
 </body>
 <th:block layout:fragment="pageScript">
@@ -120,36 +170,75 @@
         let Grid = tui.Grid;
         let pagination;
         let dbData;
+        let selectContent;//선택한 게시물의 정보를 저장
+        var replTitleSpan;//댓글내용을 임시 저장할 변수
         const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), {
             backdrop:"static"//모달창 외부 클릭시 창 닫힘 여부
         });
-        const viewer = toastui.Editor.factory({
-            el: document.querySelector('#detailViewer'),
-            viewer: true,
-            initialValue: ''//초기 내용
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'), {
+            backdrop:"static"//모달창 외부 클릭시 창 닫힘 여부
         });
-
-        const editor = new toastui.Editor({
-            //height: '500px',
-            el : document.querySelector("#editor"),
+        const viewer = toastui.Editor.factory({
+            el: document.querySelector('#detailViewer')
+            ,viewer: true
+            ,initialValue: ''//초기 내용
+            // ,hideModeSwitch: false,
+        });
+        const editorButtonList = [
+            'heading','bold','italic','strike','divider','hr','quote',
+            'divider',/*'ul','ol'*/,'task','indent','outdent','divider',
+            'table','image','link','divider','code','codeblock','divider',
+            // Using Option: Customize the last button
+            // {
+            //     type: 'button',
+            //     options: {
+            //         el: createLastButton(),
+            //         command: 'Bold',
+            //         tooltip: 'Custom Bold'
+            //     }
+            // }
+        ];
+        const editorUpdate = new toastui.Editor({
+            el : document.querySelector("#editorUpdate"),
             initialEditType: 'wysiwyg',
             previewStyle: 'vertical',
             language: 'ko-KR',
+            toolbarItems: editorButtonList
+        });
+        const editorInsert = new toastui.Editor({
+            //height: '500px',
+            el : document.querySelector("#editorInsert"),
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            language: 'ko-KR',
+            toolbarItems: editorButtonList
         });
         //editor.setMarkdown('');//실행시 디폴트값 </br> 없애기
         //editor.getHtml();
 
+        var container = document.getElementById('tui-date-picker-container');
+        var target = document.getElementById('tui-date-picker-target');
+
+        var instance = new DatePicker(container, {
+            input: {
+                element: target
+            },
+
+        });
+
 
         ajaxSelectList();//리스트 조회
-
-
 
         $("#btnInput").on('shown.bs.modal', function () {
             $(this).focus();
         });
         $("#ajaxInsert").on("click", ajaxInsert);
         $("#btnUpdate").on("click",function () {
-           $("#detailModal").modal()
+           $("#detailModal .btn-close").trigger("click");
+           updateModal.show();
+           updateForm.reset();
+           $("#updateForm").jform(selectContent);
+           editorUpdate.setHtml(selectContent.contents);
         });
         $("#searchForm").on("keyup",function (evt) {
            if (evt.key == "Enter"){
@@ -159,7 +248,13 @@
         });
         $("#searchForm select[name=pageSize]").on("change",function (evt) {
             grid.setPerPage(Number.parseInt(evt.target.value));
+            $("#searchForm input[name=pageNum]").val(1);
+            ajaxSelectList(true);
         });
+        $("#ajaxDelete").on("click",ajaxDeletePost);
+        $("#ajaxUpdate").on("click",ajaxUpdatePost);
+        //댓글등록
+        $("#ajaxBoardReplyPost").on("click", ajaxBoardReplyPost);
 
 
         /**
@@ -181,7 +276,7 @@
                 $("#searchForm input[name=pageNum]").val(currentPage);
                 ajaxSelectList(false);
             });
-            Grid.applyTheme('clean',{row:{hover:{background:'whitesmoke'}}}); // Call API of static method
+            tui.Grid.applyTheme('clean',{row:{hover:{background:'whitesmoke'}}}); // Call API of static method
             grid = new tui.Grid({
                 el: document.getElementById('grid') // Container element
                 ,scrollY : false
@@ -192,59 +287,65 @@
                 }
                 ,columns: [
                     {
-                        header: 'No',
-                        name: 'rnum',
-                        width: "auto",
+                        header: 'No'
+                        ,name: 'rnum'
+                        ,width: "auto"
+                        ,align : "center"
                     },
                     {
-                        header: '제목',
-                        name: 'title',
-                        resizable : true
+                        header: '제목'
+                        ,name: 'title'
+                        ,resizable : true
                         ,renderer:{
-                            styles :{
-                                cursor : "pointer"
-                            }
+                            type : titleRenderer
                         }
                       },
                     {
                         header: '이름',
                         name: 'userName',
-                        width: 100,
+                        width: 150,
                         resizable : true
-
+                        ,align : "center"
                     },
                     {
-                        header: '등록일',
+                        header: '날자',
                         name: 'updateDate',
-                        width: 80,
-                        // renderer:{
-                        //     styles :{
-                        //         width : "auto"
-                        //     }
-                        // }
+                        width: 160
+                        ,align : "center"
                     }
                 ]
-                // ,pageOptions: {
-                //     useClient: true, //백엔드 연동 제거시 true
-                //     perPage: 10
-                // }
             });
             grid.on("click",function (evt) {
                 console.log(evt);
                 if (evt.targetType == "cell"){
-                    ajaxSelectBoardPost(dbData[evt.rowKey].postId);
+                    selectContent = dbData[evt.rowKey];//선택한 게시물의 정보를 전역변수에 저장
+                    ajaxSelectBoardPost();
                     detailModal.show();
                 }
             });
-            $("#grid tr:hover").css('boxShadow','whitesmoke');
+            function titleRenderer(props) {
+                // console.log('titleRenderer',props);
+                var div = document.createElement("div");
+                div.setAttribute("class","tui-grid-cell-content");
+                div.setAttribute("style","cursor:pointer;");
+
+                var replyCnt = dbData[props.rowKey].replyCnt;
+                if (replyCnt>0){
+                    div.innerHTML = props.value+"<span class='badge rounded-pill bg-warning text-dark m-1'>"+replyCnt+"</span>";
+                }else{
+                    div.innerHTML = props.value;
+                }
+                this.el = div;
+                titleRenderer.prototype.getElement = function () {
+                    return this.el;
+                }
+            }
         }
 
-
-
-        function ajaxSelectList(resetFlag) {
-            /**
-             * 리스트조회
-             * */
+        /**
+         * 리스트조회
+         * */
+        function ajaxSelectList(resetPaginationFlag) {
             $.ajax({
                 type: "get",
                 url: "/ajax/board/freeBoard/list",
@@ -252,12 +353,16 @@
                 dataType: "json",
                 data : JSON.parse($("#searchForm").jform()),
                 success : function (data) {
-                    console.log(data);
+                    console.log('ajaxSelectList',data);
                     if (data.result == true){
                         dbData = data.data.contents;
+                        //utcdate를 localdate로 변환
+                        for (const datum of data.data.contents) {
+                            datum.updateDate = convertUTCtoLocal(datum.updateDate);
+                        }
                         if(grid){
                             grid.resetData(data.data.contents); // Call API of instance's public method
-                            if (resetFlag){
+                            if (resetPaginationFlag){
                                 pagination.reset(data.data.pagination.totalCount);
                             }
                         }else{
@@ -268,9 +373,6 @@
                 error : function (request, status, error) {
                     console.log(request, status, error)
                 },
-                complete : function (d) {
-
-                }
             });
         }
 
@@ -280,14 +382,359 @@
         function ajaxInsert() {
             var insertForm = $("#insertForm").jform();
             insertForm = JSON.parse(insertForm);
-            insertForm.contents = editor.getHtml();
+            insertForm.contents = editorInsert.getHtml();
             console.log("ajaxInsert",insertForm);
+
+            if(!insertForm.title){alert("제목을 입력하세요.");return;}
+            if(!insertForm.contents){alert("내용을 입력하세요.");return;}
+            if(!insertForm.userName){alert("작성자를 입력하세요.");return;}
+            if(!insertForm.pw){alert("비밀번호를 입력하세요.");return;}
 
             $.ajax({
                 type: "post",
                 url: "/ajax/board/freeBoard",
                 dataType: "json",
                 data : insertForm,
+                success : function (data) {
+                    console.log('ajaxInsert',data);
+                    if (data.result == true){
+                        alert("등록되었습니다.");
+                        $("#insertModal .btn-close").trigger("click");
+                        ajaxSelectList(true);
+                    }else {
+                        alert("에러가 발생했습니다.");
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+        /**
+         * 글수정
+         */
+        function ajaxUpdatePost() {
+            var updateForm = $("#updateForm").jform();
+            updateForm = JSON.parse(updateForm);
+            updateForm.contents = editorUpdate.getHtml();
+            console.log("ajaxUpdatePost",updateForm);
+
+            if(!updateForm.title){alert("제목을 입력하세요.");return;}
+            if(!updateForm.contents){alert("내용을 입력하세요.");return;}
+            if(!updateForm.userName){alert("작성자를 입력하세요.");return;}
+            if(!updateForm.pw){alert("비밀번호를 입력하세요.");return;}
+
+            $.ajax({
+                type: "put",
+                url: "/ajax/board/freeBoard",
+                dataType: "json",
+                data : updateForm,
+                success : function (data) {
+                    console.log('ajaxUpdatePost',data);
+                    if (data.result == true){
+                        alert("등록되었습니다.");
+                        $("#updateModal .btn-close").trigger("click");
+                        ajaxSelectList(true);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+
+        /**
+         * 게시글상세보기
+         * @param postId
+         */
+        function ajaxSelectBoardPost(){
+            $.ajax({
+                type: "get",
+                url: "/ajax/board/freeBoard/"+selectContent.postId,
+                dataType: "json",
+                // data : {postId : postId},
+                success : function (data) {
+                    console.log('ajaxSelectBoardPost',data);
+                    if (data.result == true){
+                        var postContent = data.data.postContent;
+                        var replyContent = data.data.reply;
+                        selectContent.contents = postContent.contents;
+                        for (const elem in postContent) {
+                            let value = postContent[elem];
+                            if (elem == "contents"){
+                                viewer.setMarkdown(value);
+                            }else{
+                                $("#detailModal").find("[name="+elem+"]").html(value);
+                            }
+                        }
+                        $(".replyList").remove();
+                        //댓글을 상세화면 하단에 추가
+                        $(replyContent).each((idx,item)=>{
+                           // console.log('reply',idx,item);
+                            $("#detailModal #replyBox")
+                                .after(
+                                    "<div id="+item.postId+" class='replyList d-flex justify-content-between input-group-sm mt-1 mb-0'>" +
+                                        "<span class='replRow ' style='display: -webkit-inline-box;width:calc(100% - 525px)'>"+
+                                            "<small class='me-2'>"+item.createDate+"</small>"+
+                                            "<sapn class='title'>"+item.title+"</sapn>"+
+                                        "</span>"+
+                                        `
+                                        <div class='d-flex justify-content-end'>
+                                            <button class='updateReply btn btn-sm btn-outline-light'>
+                                              <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <button class='deleteReply btn btn-sm btn-outline-light'>
+                                              <i class="bi bi-x"></i>
+                                            </button>
+                                            <div class='input-group'>
+                                              <button class='up btn btn-sm btn-outline-primary px-1'>
+                                                <i class="bi bi-arrow-up-circle"></i>
+                                              </button>
+                                              <span class='input-group-text text-primary'>110</span>
+                                            </div>
+                                            <div class='input-group'>
+                                              <button class='down btn btn-sm btn-outline-danger px-1'>
+                                                <i class="bi bi-arrow-down-circle"></i>
+                                              </button>
+                                              <span class='input-group-text text-danger'>110</span>
+                                            </div>
+                                        </div>`+
+                                    "</div>");
+                        });
+                        $(".deleteReply").on("click",function (evt) {
+                            ajaxDeleteReply($(evt.currentTarget).closest("div.replyList").attr("id"));
+                        });
+                        $(".updateReply").on("click",function (evt) {
+                            //비밀번호 확인
+                            // if(!ajaxSelectReplyPW(evt)){
+                            //     return;
+                            // }
+                            //댓글쓰기버튼을 댓글 등록 버튼으로 변경
+                            addUpdateReplyEventHandler(evt,false);
+                            addDeleteReplyEventHandler(evt,true);
+                        });
+                        //$(".down").on("click", ajaxUpdateVote("down"));
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+            function addDeleteReplyEventHandler(evt,editMode) {
+                var id = $(evt.currentTarget).closest("div.replyList").attr("id");
+                if (editMode){
+                    // console.log('addDeleteReplyEventHandler',editMode)
+                    $("#"+id).find(".deleteReply")
+                      .removeClass("btn-outline-light")
+                      .addClass("btn-light")
+                      .empty()
+                      .append(`<i class="bi bi-x-circle"></i>`)
+                      .off("click")
+                      .on("click",(evt)=>{
+                          $("#"+id+" .replRow").find("input")
+                            .remove()
+                            .append(replTitleSpan);
+                          addDeleteReplyEventHandler(evt,false);
+                      });
+                }else{
+                    // console.log('addDeleteReplyEventHandler',editMode)
+                    $("#"+id).find(".deleteReply")
+                      .removeClass("btn-light")
+                      .addClass("btn-outline-light")
+                      .empty()
+                      .append(`<i class="bi bi-x"></i>`)
+                      .off("click")
+                      .on("click",(evt)=>{
+                          ajaxDeleteReply($(evt.target).closest("div.replyList").attr("id"));
+                      });
+                    addUpdateReplyEventHandler(evt,true);
+                }
+            }
+            function addUpdateReplyEventHandler(evt,editMode) {
+                var id = $(evt.currentTarget).closest("div.replyList").attr("id");
+                if (editMode){
+                    // console.log('addUpdateReplyEventHandler',editMode)
+                    $("#"+id).find(".updateReply")
+                      .removeClass("btn-light")
+                      .addClass("btn-outline-light")
+                      .empty()
+                      .append(`<i class="bi bi-pencil-square"></i>`)
+                      .off("click")
+                      .on("click", (evt)=>{
+                          var id = $(evt.target).closest("div.replyList").attr("id");
+                          addUpdateReplyEventHandler(evt,false);
+                          addDeleteReplyEventHandler(evt,true);
+                      });
+                    //댓글내용을 다시 삽입
+                    if(replTitleSpan){
+                        $("#"+id+" .replRow").append(replTitleSpan);
+                        replTitleSpan = null;
+                    }
+                }else{
+                    // console.log('addUpdateReplyEventHandler',editMode)
+                    var replTitle = $(evt.target).closest(".replyList").find(".title").text();
+                    //입력되있던 댓글내용을 제거
+                    replTitleSpan = $("#"+id).find(".replRow .title").detach();
+                    // console.log('replTitleSpan',replTitleSpan,'replTitle',replTitle);
+                    //input 삽입
+                    $("#"+id).find(".replRow")
+                      .append("<input type='text' name='title' class='form-control form-control-sm' value='"+replTitle+"' autocomplete='off' maxlength='1000'>"+
+                        "<input type='password' name='pw' class='form-control form-control-sm' style='width: auto;' placeholder='password'>"
+                      );
+                    $("#"+id).find(".updateReply")
+                      .removeClass("btn-outline-light")
+                      .addClass("btn-light")
+                      .empty()
+                      .append(`<i class="bi bi-check-circle"></i>`)
+                      .off("click")
+                      .on("click",(evt)=>{
+                          ajaxUpdateReply(id);
+                      })
+                }
+            }
+        }
+
+        /**
+         * 게시글삭제
+         */
+        function ajaxDeletePost() {
+            var pw = prompt("비밀번호");
+            if(!pw)    return;
+            $.ajax({
+                type: "delete",
+                url: "/ajax/board/freeBoard",
+                dataType: "json",
+                data : {postId : selectContent.postId, pw : pw},
+                success : function (data) {
+                    console.log('ajaxDeletePost',data);
+                    if (data.result == true){
+                        alert("삭제되었습니다");
+                        $("#detailModal .btn-close").trigger("click");
+                        ajaxSelectList(false);
+                    }else if(data.result == false && data.info == "not matched"){
+                        alert("비밀번호가 일치하지 않습니다.");
+                    }else{
+                        console.log(data.info);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+
+        /**
+         * 댓글등록
+         */
+        function ajaxBoardReplyPost() {
+            //댓글내용 빈값 검사
+            if($("#replyBox input[name=title]").val() == "") {
+                $("#replyBox input[name=title]").focus().addClass("is-invalid");
+                return;
+            }else{
+                $("#replyBox input[name=title]").removeClass("is-invalid");
+            }
+            //댓글비번 유효성 검사
+            if($("#replyBox input[name=pw]").val() == "") {
+                $("#replyBox input[name=pw]").focus().addClass("is-invalid");
+                return;
+            }else{
+                $("#replyBox input[name=pw]").removeClass("is-invalid");
+            }
+            var replyForm = JSON.parse($("#replyBox").jform());
+            replyForm.postGroupId = selectContent.postId;
+            console.log("ajaxBoardReplyPost",replyForm);
+            $.ajax({
+                type: "post",
+                url: "/ajax/board/freeBoard/reply",
+                dataType: "json",
+                data : replyForm,
+                success : function (data) {
+                    console.log('ajaxBoardReplyPost',data);
+                    if (data.result == true){
+                        replyBox.reset();//댓글입력폼 초기화
+                        ajaxSelectBoardPost();
+                    }else if(data.result == false && data.info == "not matched"){
+                        alert("비밀번호가 일치하지 않습니다.");
+                    }else{
+                        console.log(data.info);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+        /**
+         * 댓글수정
+         * @param {strig} postId
+         * */
+        function ajaxUpdateReply(postId) {
+            //댓글내용
+            var title = $("#"+postId+" .replRow input[name=title]").val();
+            var pw = $("#"+postId+" .replRow input[name=pw]").val();
+            $.ajax({
+                type: "put",
+                url: "/ajax/board/freeBoard/reply",
+                dataType: "json",
+                data : {postId:postId,title:title, pw:pw},
+                success : function (data) {
+                    console.log('ajaxBoardReplyPost',data);
+                    if (data.result == true){
+                        ajaxSelectBoardPost();
+                    }else if(data.result == false && data.info == "not matched"){
+                        $("#"+postId+" .replRow input[name=pw]").focus();
+                        alert("비밀번호가 일치하지 않습니다.");
+                    }else{
+                        console.error(data.info);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+
+        /**
+         * 댓글삭제
+         */
+        function ajaxDeleteReply(postId) {
+            var pw = prompt("비밀번호");
+            if(!pw)    return;
+            $.ajax({
+                type: "delete",
+                url: "/ajax/board/freeBoard/reply",
+                dataType: "json",
+                data : {postId : postId, pw : pw},
+                success : function (data) {
+                    console.log('ajaxDeleteReply',data);
+                    if (data.result == true){
+                        alert("삭제되었습니다");
+                        ajaxSelectBoardPost();//상세 화면 갱신
+                        ajaxSelectList(false);//목록화면 갱신(댓글수표시)
+                    }else if(data.result == false && data.info == "not matched"){
+                        alert("비밀번호가 일치하지 않습니다.");
+                    }else{
+                        console.error(data.info);
+                    }
+                },
+                error : function (request, status, error) {
+                    console.log(request, status, error)
+                }
+            });
+        }
+
+
+        function ajaxSelectReplyPW(evt) {
+            var postId = $(evt.currentTarget).closest(".replyList").attr("id");
+            console.log()
+            $.ajax({
+                type: "post",
+                url: "/ajax/board/freeBoard/reply/",
+                dataType: "json",
+                data : insertForm,
+                async: false, //비동기 -> 동기
+                timeout: 1500,
                 success : function (data) {
                     console.log('ajaxInsert',data);
                     if (data.result == true){
@@ -301,38 +748,11 @@
                 }
             });
         }
-
-        function ajaxSelectBoardPost(postId){
-            $.ajax({
-                type: "get",
-                url: "/ajax/board/freeBoard/"+postId,
-                dataType: "json",
-                // data : {postId : postId},
-                success : function (data) {
-                    console.log('ajaxSelectBoardPost',data);
-                    if (data.result == true){
-                        data = data.data;
-                        for (const datum in data) {
-                            let value = data[datum];
-                            console.log(datum,value);
-                            if (datum == "contents"){
-                                viewer.setMarkdown(value);
-                            }else{
-                                $("#detailModal").find("#"+datum).html(value);
-                            }
-                        }
-                    }
-                },
-                error : function (request, status, error) {
-                    console.log(request, status, error)
-                }
-            });
-        }
     </script>
 </th:block>
 <th:block th:fragment="pageCSS">
     <style>
-        textarea{width: -moz-available;}
+
     </style>
 </th:block>
 </html>

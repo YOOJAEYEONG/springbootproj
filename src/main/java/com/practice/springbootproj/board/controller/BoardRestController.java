@@ -1,10 +1,12 @@
 package com.practice.springbootproj.board.controller;
 
 import com.practice.springbootproj.board.model.BoardInsertDTO;
+import com.practice.springbootproj.board.model.BoardUpdateDTO;
+import com.practice.springbootproj.board.model.ReplyInsertDTO;
+import com.practice.springbootproj.board.model.ReplyUpdateDTO;
 import com.practice.springbootproj.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,19 +47,58 @@ public class BoardRestController {
 
     @PostMapping("/{boardName}")
     public ResponseEntity<Object> insertBoardPost(BoardInsertDTO boardInsertDTO, @PathVariable("boardName") String boardName){
-        boardInsertDTO.setBoardName(boardName);
-        log.info("[insertBoardPost]"+boardInsertDTO.toString());
-        Map map = new HashMap();
-        try{
-            map.put("result",true);
-            map.put("data",boardService.insertBoardPost(boardInsertDTO));
-        }catch (Exception e){
-            map.put("result",false);
-            map.put("info",e.getMessage());
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity<Object>(map , HttpStatus.OK);
+        return boardService.insertBoardPost(boardInsertDTO, boardName);
     }
 
+    @PutMapping("/{boardName}")
+    public ResponseEntity<Object> updateBoardPost(BoardUpdateDTO boardUpdateDTO, @PathVariable("boardName") String boardName){
+        boardUpdateDTO.setBoardName(boardName);
+        log.info("[updateBoardPost]"+boardUpdateDTO.toString());
+
+
+        return boardService.updateBoardPost(boardUpdateDTO);
+    }
+
+
+
+    @DeleteMapping("/{boardName}")
+    public ResponseEntity<Object> deleteBoardPost(
+            @RequestParam Map<String,String> params,
+            @PathVariable("boardName") String boardName) {
+        return boardService.deleteBoardPost(params);
+    }
+//////////////////////////////////////////////////////////////////////
+
+    /**
+     * 댓글 입력
+     * @param replyInsertDTO
+     * @return
+     */
+    @PostMapping("/{boardName}/reply")
+    public ResponseEntity<Object> insertBoardReply(ReplyInsertDTO replyInsertDTO){
+        return boardService.insertBoardReply(replyInsertDTO);
+    }
+
+    /**
+     * 댓글 수정
+     * @param replyUpdateDTO
+     * @return
+     */
+    @PutMapping("/{boardName}/reply")
+    public ResponseEntity updateBoardReply(ReplyUpdateDTO replyUpdateDTO){
+        return boardService.updateBoardReply(replyUpdateDTO);
+    }
+
+    /**
+     * 댓글 삭제
+     * @param pw 등록시 입력한 비밀번호
+     * @param postId 키값
+     * @return
+     */
+    @DeleteMapping("/{boardName}/reply")
+    public ResponseEntity deleteBoardReply(
+        @RequestParam String pw,@RequestParam String postId){
+        log.info("[deleteBoardReply]"+postId+", "+pw);
+        return boardService.deleteBoardReply(postId,pw);
+    }
 }

@@ -5,8 +5,10 @@ import lombok.NonNull;
 import org.apache.ibatis.type.Alias;
 
 @Data
-@Alias("BoardInsertDTO")
-public class BoardInsertDTO {
+@Alias("BoardUpdateDTO")
+public class BoardUpdateDTO {
+    @NonNull
+    private int postId;
     @NonNull
     private String userName;
     @NonNull

@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html lang="en"xmlns:th="http://www.thymeleaf.org">
 
-    <div th:fragment="sidemenufragment">
-        <div>sidemenu</div>
+<div th:fragment="sidemenufragment">
+
+
+    <div class="m-1">
+        <div class="m-3" id="area-title">YooJaeYeong</div>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-light">소개</li>
+            <li class="list-group-item list-group-item-light">공지</li>
+            <li class="list-group-item list-group-item-light">자유게시판</li>
+            <li class="list-group-item list-group-item-light">라이브채팅</li>
+            <li class="list-group-item list-group-item-light">실험실</li>
+        </ul>
     </div>
+
+    <script type="text/javascript">
+        $("#area-title").on("click",()=> location.href="/").css({"cursor":"pointer"});
+    </script>
+    <style>
+        .list-group-item:hover{background-color: #c9e0f0;cursor: pointer;}
+    </style>
+
+
+</div>
 </html>
