@@ -14,6 +14,7 @@ public interface BoardService{
   ResponseEntity<Object> selectBoardList(Map<String,Object> params);
   ResponseEntity<Object> selectBoardPost(Map<String,String> params);
   ResponseEntity<Object> insertBoardPost(BoardInsertDTO boardInsertDTO, String boardName);
+  int insertBoardPostTransactional(BoardInsertDTO boardInsertDTO);
   ResponseEntity<Object> deleteBoardPost(Map<String, String> params);
   ResponseEntity<Object> updateBoardPost(BoardUpdateDTO boardUpdateDTO);
 

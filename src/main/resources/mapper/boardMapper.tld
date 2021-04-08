@@ -24,7 +24,7 @@
         FROM
             (
                 SELECT
-                    ROW_NUMBER() OVER (PARTITION BY UPDATE_DATE ORDER BY POST_ID DESC) AS RNUM
+                    ROW_NUMBER() OVER (/*PARTITION BY UPDATE_DATE*/ ORDER BY POST_ID DESC) AS RNUM
                     ,POST_ID
                     ,USER_NAME
                     ,TITLE

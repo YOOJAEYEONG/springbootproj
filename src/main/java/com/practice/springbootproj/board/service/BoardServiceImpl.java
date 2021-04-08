@@ -5,8 +5,8 @@ import com.practice.springbootproj.board.model.BoardInsertDTO;
 import com.practice.springbootproj.board.model.BoardUpdateDTO;
 import com.practice.springbootproj.board.model.ReplyInsertDTO;
 import com.practice.springbootproj.board.model.ReplyUpdateDTO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,13 @@ import java.util.Map;
 
 @Slf4j(topic = "BoardServiceImpl")
 @Service
-@RequiredArgsConstructor //@autowired 대신 변수를 final 로 선언하면 자동 주입됨
+//@RequiredArgsConstructor //@autowired 대신 변수를 final 로 선언하면 자동 주입됨
 public class BoardServiceImpl implements BoardService{
 
-    private final BoardMapper boardMapper;
+    @Autowired
+    private BoardMapper boardMapper;
+
+
 
 
     /**
@@ -61,9 +64,6 @@ public class BoardServiceImpl implements BoardService{
             responseData.put("info",e.getMessage());
         }
         return new ResponseEntity<>(responseData, HttpStatus.OK);
-
-
-        //return boardMapper.selectBoardList(params);
     }
 
     /**
@@ -94,15 +94,14 @@ public class BoardServiceImpl implements BoardService{
      * @return ResponseEntity
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Object> insertBoardPost(BoardInsertDTO boardInsertDTO, String boardName) {
 
         Map<String,Object> map = new HashMap<>();
         try{
             boardInsertDTO.setBoardName(boardName);
             log.info("[insertBoardPost]:{}",boardInsertDTO);
-            insertBoardPostTransactional(boardInsertDTO);
-//            boardMapper.insertBoardPost(boardInsertDTO);
+//            insertBoardPostTransactional(boardInsertDTO);
+            boardMapper.insertBoardPost(boardInsertDTO);
             //트랜잭션 테스트위한 에러 생성
 //            boardInsertDTO.setUserName("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 //            boardMapper.insertBoardPost(boardInsertDTO);
@@ -113,23 +112,19 @@ public class BoardServiceImpl implements BoardService{
             log.error(e.getMessage(), e);
             // 트랜잭션을 작동시키기위해서는 rollbackfor class를 전달해야한다.
             // 그러나 이러한 방법은 요청결과를 받을 수 없는문제가 존재함
-            //throw e;
         }
         return new ResponseEntity<>(map , HttpStatus.OK);
     }
 
-
     @Transactional(rollbackFor = Exception.class)
-    void insertBoardPostTransactional(BoardInsertDTO boardInsertDTO){
-        try {
+    public int insertBoardPostTransactional(BoardInsertDTO boardInsertDTO) {
+        int result = 0;
+        result = boardMapper.insertBoardPost(boardInsertDTO);
+        //트랜잭션 테스트위한 에러 생성
+        boardInsertDTO.setUserName("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+        result += boardMapper.insertBoardPost(boardInsertDTO);
 
-            boardMapper.insertBoardPost(boardInsertDTO);
-            //트랜잭션 테스트위한 에러 생성
-            boardInsertDTO.setUserName("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-            boardMapper.insertBoardPost(boardInsertDTO);
-        }catch (Exception e){
-            throw e;
-        }
+        return result;
     }
 
 
