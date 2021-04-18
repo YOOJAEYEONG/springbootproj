@@ -59,30 +59,37 @@ public interface BoardMapper {
 
     /**
      * 댓글등록
-     * @param replyInsertDTO
-     * @return
+     * @param replyInsertDTO ...
+     * @return result
      */
     Integer insertBoardReply(ReplyInsertDTO replyInsertDTO);
 
     /**
      * 댓글목록조회
-     * @param params
-     * @return
+     * @param params ...
+     * @return result
      */
-    List<ReplyListVO> selectReplyPost(Map<String, String> params);
+    List<ReplyListVO> selectReplyList(Map<String, String> params);
 
     /**
      * 댓글삭제
-     * @param postId
-     * @param pw
-     * @return
+     * @param postId 댓글 ID
+     * @param pw 댓글 PW
+     * @return result
      */
     int deleteBoardReply(String postId, String pw);
 
     /**
      * 댓글 수정
-     * @param replyUpdateDTO
-     * @return
+     * @param replyUpdateDTO 댓글수정 DTO
+     * @return result
      */
     Integer updateBoardReply(ReplyUpdateDTO replyUpdateDTO);
+
+    /**
+     * 댓글 추천수 업데이트
+     * @param boardReplyVoteDTO id, (up | down)
+     * @return result
+     */
+    void updateBoardReplyVote(BoardReplyVoteDTO boardReplyVoteDTO);
 }

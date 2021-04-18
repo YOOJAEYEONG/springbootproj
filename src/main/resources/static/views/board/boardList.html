@@ -4,167 +4,180 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="templates/layouts/common_layout">
-<head >
-    <title>게시판</title>
-    <script defer src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
-    <script defer th:src="@{/views/board/board.js}"></script>
+<head>
+  <title>게시판</title>
+  <script defer src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
+  <script defer th:src="@{/views/board/board.js}"></script>
 </head>
 <body>
-    <th:block layout:fragment="pageBody">
-        <div class="container-fluid">
-            <div class="row">
-                <h3>자유게시판 <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글</button></h3>
-                <form id="searchForm">
-                    <input type="hidden" title="현재페이지번호" name="pageNum" value="1">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Per Page</span>
-                        <select name="pageSize" class="form-select">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                            <option value="50">50</option>
-                        </select>
-                        <span class="input-group-text">제목</span>
-                        <input type="text" name="title" class="form-control" autocomplete="off">
-                        <span class="input-group-text">이름</span>
-                        <input type="text" name="userName" class="form-control" autocomplete="off">
-                        <span class="input-group-text">등록일검색:</span>
-<!--                        <input type="text" name="startDate" class="date-picker form-control" autocomplete="off" placeholder="시작일">-->
-<!--                        <span class="input-group-text">-</span>-->
-<!--                        <input type="text" name="endDate" class="date-picker form-control" autocomplete="off" placeholder="종료일">-->
-                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-                            <input type="text" id="tui-date-picker-target" aria-label="Date-Time">
-                            <span class="tui-ico-date"></span>
-                        </div>
-                        <div id="tui-date-picker-container" style="margin-top: -1px;"></div>
-
-                    </div>
-                </form>
-                <div id="grid"></div>
-                <div id="pagination" class="tui-pagination"></div>
-            </div>
-        </div> <!-- container-fluid -->
-
-<div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">등록하기</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="insertForm">
-                    <table class="table">
-                        <tr>
-                            <th>작성자</th>
-                            <td><input type="text" name="userName" maxlength="50" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
-                            <th>비밀번호</th>
-                            <td><input type="password" name="pw" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
-                        </tr>
-                        <tr>
-                            <th>제목</th>
-                            <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"><div id="editorInsert"></div></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
-            </div>
-        </div>
-    </div>
-</div> <!-- insertModal -->
-
-<div class="modal" id="detailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">상세내용</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-sm table-bordered">
-                    <colgroup>
-                        <col width="20%">
-                        <col>
-                    </colgroup>
-                    <tr>
-                        <th>작성자</th>
-                        <td name="userName"></td>
-                    </tr>
-                    <tr>
-                        <th>제목</th>
-                        <td name="title"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div id="detailViewer" ></div>
-                        </td>
-                    </tr>
-                </table>
-                <form id="replyBox" onsubmit="return false;">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text">댓글입력 :</span>
-                        <input type="text" name="title" class="form-control" style="width: 40%;" autocomplete="off">
-                        <input type="password" name="pw" class="mr-4 form-control" placeholder="비밀번호" autocomplete="off" maxlength="20">
-                        <button id="ajaxBoardReplyPost" class="btn btn-outline-dark" >등록</button>
-                    </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
-                <button type="button" id="btnUpdate" class="btn btn-primary">수정</button>
-            </div>
-        </div>
-    </div>
-</div> <!-- detailModal -->
-
-<div class="modal" id="updateModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">수정</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="updateForm">
-                    <input type="hidden" name="postId">
-                    <table class="table">
-                        <tr>
-                            <th>작성자</th>
-                            <td><input type="text" name="userName" maxlength="50" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
-                            <th>비밀번호</th>
-                            <td><input type="password" name="pw" class="form-control" value="" autocomplete="off" aria-autocomplete="none"></td>
-                        </tr>
-                        <tr>
-                            <th>제목</th>
-                            <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"><div id="editorUpdate"></div></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
-                <button type="button" id="ajaxUpdate" class="btn btn-primary">저장</button>
-            </div>
-        </div>
-    </div>
-</div> <!-- updateModal -->
-    </th:block>
-</body>
-<th:block layout:fragment="pageScript">
-</th:block>
-<th:block th:fragment="pageCSS">
+<th:block layout:fragment="pageBody">
+  <th:block layout:fragment="pageScript">
+  </th:block>
+  <th:block th:fragment="pageCSS">
     <style>
     </style>
+  </th:block>
+  <div class="container-fluid">
+    <div class="row">
+      <h3>자유게시판
+        <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글
+        </button>
+      </h3>
+      <form id="searchForm">
+        <input type="hidden" title="현재페이지번호" name="pageNum" value="1">
+        <div class="input-group mb-3">
+          <select name="pageSize" class="form-select">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+          <span class="input-group-text">제목</span>
+          <input type="text" name="title" class="form-control" autocomplete="off">
+          <span class="input-group-text">이름</span>
+          <input type="text" name="userName" class="form-control" autocomplete="off">
+          <span class="input-group-text">등록일검색:</span>
+          <!--                        <input type="text" name="startDate" class="date-picker form-control" autocomplete="off" placeholder="시작일">-->
+          <!--                        <span class="input-group-text">-</span>-->
+          <!--                        <input type="text" name="endDate" class="date-picker form-control" autocomplete="off" placeholder="종료일">-->
+          <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+            <input type="text" id="tui-date-picker-target" aria-label="Date-Time">
+            <span class="tui-ico-date"></span>
+          </div>
+          <div id="tui-date-picker-container" style="margin-top: -1px;"></div>
+        </div>
+      </form>
+      <div id="grid"></div>
+      <div id="pagination" class="tui-pagination"></div>
+    </div>
+  </div> <!-- container-fluid -->
+
+  <div class="modal" id="insertModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">등록하기</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="insertForm">
+            <table class="table">
+              <tr>
+                <th>작성자</th>
+                <td><input type="text" name="userName" maxlength="20" class="form-control" value="" autocomplete="off"
+                           aria-autocomplete="none"></td>
+                <th>비밀번호</th>
+                <td><input type="password" name="pw" class="form-control" value="" autocomplete="off"
+                           aria-autocomplete="none"></td>
+              </tr>
+              <tr>
+                <th>제목</th>
+                <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <div id="editorInsert"></div>
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="ajaxInsert" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- insertModal -->
+
+
+  <div class="modal" id="detailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">상세내용</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-sm table-bordered">
+            <colgroup>
+              <col width="20%">
+              <col>
+            </colgroup>
+            <tr>
+              <th>작성자</th>
+              <td name="userName"></td>
+            </tr>
+            <tr>
+              <th>제목</th>
+              <td name="title"></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div id="detailViewer"></div>
+              </td>
+            </tr>
+          </table>
+          <form id="replyBox" onsubmit="return false;">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">댓글입력 :</span>
+              <input type="text" name="title" class="form-control" style="width: 40%;" autocomplete="off">
+              <input type="password" name="pw" class="mr-4 form-control" placeholder="비밀번호" autocomplete="off"
+                     maxlength="20">
+              <button id="ajaxBoardReplyPost" class="btn btn-outline-dark">등록</button>
+            </div>
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
+          <button type="button" id="btnUpdate" class="btn btn-primary">수정</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- detailModal -->
+
+  <div class="modal" id="updateModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">수정</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="updateForm">
+            <input type="hidden" name="postId">
+            <table class="table">
+              <tr>
+                <th>작성자</th>
+                <td><input type="text" name="userName" maxlength="50" class="form-control" value="" autocomplete="off"
+                           aria-autocomplete="none"></td>
+                <th>비밀번호</th>
+                <td><input type="password" name="pw" class="form-control" value="" autocomplete="off"
+                           aria-autocomplete="none"></td>
+              </tr>
+              <tr>
+                <th>제목</th>
+                <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <div id="editorUpdate"></div>
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="ajaxDelete" class="btn btn-secondary">삭제</button>
+          <button type="button" id="ajaxUpdate" class="btn btn-primary">저장</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- updateModal -->
 </th:block>
+</body>
 </html>

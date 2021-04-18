@@ -119,33 +119,40 @@ function createGrid(data) {
     ,onGridUpdated : function (evt) {
       console.log(evt);
     }
+    ,columnOptions : {
+      resizable : true
+    }
     ,columns: [
       {
         header: 'No'
         ,name: 'rnum'
-        ,width: "auto"
         ,align : "center"
+        ,resizable : false
       },
       {
         header: '제목'
         ,name: 'title'
-        ,resizable : true
+        ,width: 800
+        ,ellipsis : true // 커럼 사이즈보다 넘치는 내용을 자동 ... 처리 해줌
+        ,escapeHTML : true //html entity 형식을 자동 디코딩해줌
         ,renderer:{
           type : titleRenderer
         }
       },
       {
-        header: '이름',
-        name: 'userName',
-        width: 150,
-        resizable : true
+        header: '이름'
+        ,name: 'userName'
+        ,width: 150
+        ,ellipsis : true
+        ,escapeHTML : true
         ,align : "center"
       },
       {
-        header: '날자',
-        name: 'updateDate',
-        width: 160
+        header: '날짜'
+        ,name: 'updateDate'
+        ,width: 160
         ,align : "center"
+        ,resizable : false
       }
     ]
   });
@@ -315,27 +322,28 @@ function ajaxSelectBoardPost(){
               "<sapn class='title'>"+item.title+"</sapn>"+
               "</span>"+
               `
-                                        <div class='d-flex justify-content-end'>
-                                            <button class='updateReply btn btn-sm btn-outline-light'>
-                                              <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class='deleteReply btn btn-sm btn-outline-light'>
-                                              <i class="bi bi-x"></i>
-                                            </button>
-                                            <div class='input-group'>
-                                              <button class='up btn btn-sm btn-outline-primary px-1'>
-                                                <i class="bi bi-arrow-up-circle"></i>
-                                              </button>
-                                              <span class='input-group-text text-primary'>110</span>
-                                            </div>
-                                            <div class='input-group'>
-                                              <button class='down btn btn-sm btn-outline-danger px-1'>
-                                                <i class="bi bi-arrow-down-circle"></i>
-                                              </button>
-                                              <span class='input-group-text text-danger'>110</span>
-                                            </div>
-                                        </div>`+
-              "</div>");
+                <div class='d-flex justify-content-end'>
+                  <button class='updateReply btn btn-sm btn-outline-light'>
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class='deleteReply btn btn-sm btn-outline-light'>
+                    <i class="bi bi-x"></i>
+                  </button>
+                  <div class='input-group'>
+                    <button class='voteUp btn btn-sm btn-outline-primary px-1'>
+                      <i class="bi bi-arrow-up-circle"></i>
+                    </button>
+                    <span class='input-group-text text-primary'>${item.voteUp}</span>
+                  </div>
+                  <div class='input-group'>
+                    <button class='voteDown btn btn-sm btn-outline-danger px-1'>
+                      <i class="bi bi-arrow-down-circle"></i>
+                    </button>
+                    <span class='input-group-text text-danger'>${item.voteDown}</span>
+                  </div>
+                </div>`+
+              "</div>"
+            );
         });
         $(".deleteReply").on("click",function (evt) {
           ajaxDeleteReply($(evt.currentTarget).closest("div.replyList").attr("id"));
@@ -349,13 +357,19 @@ function ajaxSelectBoardPost(){
           addUpdateReplyEventHandler(evt,false);
           addDeleteReplyEventHandler(evt,true);
         });
-        //$(".down").on("click", ajaxUpdateVote("down"));
       }
+      $(".voteUp, .voteDown").on("click", ajaxUpdateReplyVote);
     },
     error : function (request, status, error) {
       console.log(request, status, error)
     }
   });
+
+  /**
+   *
+   * @param evt
+   * @param editMode
+   */
   function addDeleteReplyEventHandler(evt,editMode) {
     var id = $(evt.currentTarget).closest("div.replyList").attr("id");
     if (editMode){
@@ -386,6 +400,12 @@ function ajaxSelectBoardPost(){
       addUpdateReplyEventHandler(evt,true);
     }
   }
+
+  /**
+   *
+   * @param evt
+   * @param editMode
+   */
   function addUpdateReplyEventHandler(evt,editMode) {
     var id = $(evt.currentTarget).closest("div.replyList").attr("id");
     if (editMode){
@@ -560,10 +580,48 @@ function ajaxDeleteReply(postId) {
   });
 }
 
+/**
+ * 댓글 추천수 업데이트
+ * @param evt
+ */
+function ajaxUpdateReplyVote(evt) {
+  console.log("ajaxUpdateReplyVote");
+  console.log(evt);
+  console.log(this);
+  let postId = $(this).closest(".replyList").attr("id");
+  let type;
+  if ($(this).attr("class").includes("voteUp")){
+    type = "voteUp";
+  }else if ($(this).attr("class").includes("voteDown")){
+    type = "voteDown";
+  }
 
+
+  $.ajax({
+    type: "put",
+    url: "/ajax/board/freeBoard/replyVote",
+    // dataType: "json",
+    data: {postId: postId, type: type},
+    success: function (data) {
+      console.log('ajaxUpdateReplyVote', data);
+      if (data.result == true) {
+        ajaxSelectBoardPost();//상세 화면 갱신
+      } else {
+        console.error(data.info);
+      }
+    },
+    error: function (request, status, error) {
+      console.log(request, status, error)
+    }
+  });
+}
+
+/**
+ * 댓글 비번 체크
+ * @param evt
+ */
 function ajaxSelectReplyPW(evt) {
   var postId = $(evt.currentTarget).closest(".replyList").attr("id");
-  console.log()
   $.ajax({
     type: "post",
     url: "/ajax/board/freeBoard/reply/",
