@@ -52,19 +52,14 @@ const editorInsert = new toastui.Editor({
 var container = document.getElementById('tui-date-picker-container');
 var target = document.getElementById('tui-date-picker-target');
 
-var instance = new DatePicker(container, {
-  input: {
-    element: target
-  },
 
-});
 
 
 ajaxSelectList();//리스트 조회
 
-$("#btnInput").on('shown.bs.modal', function () {
-  $(this).focus();
-});
+// $("#btnInput").on('shown.bs.modal', function () {
+//   $(this).focus();
+// });
 $("#ajaxInsert").on("click", ajaxInsert);
 $("#btnUpdate").on("click",function () {
   $("#detailModal .btn-close").trigger("click");
@@ -73,14 +68,14 @@ $("#btnUpdate").on("click",function () {
   $("#updateForm").jform(selectContent);
   editorUpdate.setHtml(selectContent.contents);
 });
-$("#searchForm").on("keyup",function (evt) {
+$("#searchForm input").on("keyup",function (evt) {
   if (evt.key == "Enter"){
     $("#searchForm input[name=pageNum]").val(1);
     ajaxSelectList(true);
   }
 });
 $("#searchForm select[name=pageSize]").on("change",function (evt) {
-  grid.setPerPage(Number.parseInt(evt.target.value));
+  grid.setPerPage(parseInt(evt.target.value));
   $("#searchForm input[name=pageNum]").val(1);
   ajaxSelectList(true);
 });
@@ -132,7 +127,7 @@ function createGrid(data) {
       {
         header: '제목'
         ,name: 'title'
-        ,width: 800
+        ,width: 500
         ,ellipsis : true // 커럼 사이즈보다 넘치는 내용을 자동 ... 처리 해줌
         ,escapeHTML : true //html entity 형식을 자동 디코딩해줌
         ,renderer:{
@@ -162,6 +157,8 @@ function createGrid(data) {
       selectContent = dbData[evt.rowKey];//선택한 게시물의 정보를 전역변수에 저장
       ajaxSelectBoardPost();
       detailModal.show();
+      var width = $("#detailModal").width();
+      $("#detailModal td.title").css('maxWidth',width - width/2)
     }
   });
   function titleRenderer(props) {
@@ -189,12 +186,14 @@ function createGrid(data) {
  * @param resetPaginationFlag
  */
 function ajaxSelectList(resetPaginationFlag) {
+  var params = JSON.parse($("#searchForm").jform());
+  params.pageSize = $("select[name=pageSize] :selected").val();
   $.ajax({
     type: "get",
     url: "/ajax/board/freeBoard/list",
     contentType: "application/json;charset=UTF-8",
     dataType: "json",
-    data : JSON.parse($("#searchForm").jform()),
+    data : params,
     success : function (data) {
       console.log('ajaxSelectList',data);
       if (data.result == true){

@@ -23,8 +23,8 @@ function convertUTCtoLocal(timestamp) {
     if (mm < 10)
         mm = "0" + mm;
     var cur_day = aaaa + "-" + mm + "-" + gg;
-    var hours = date.getHours()
-    var minutes = date.getMinutes()
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
     var seconds = date.getSeconds();
     if (hours < 10)
         hours = "0" + hours;
@@ -35,24 +35,36 @@ function convertUTCtoLocal(timestamp) {
     return cur_day + " " + hours + ":" + minutes + ":" + seconds;
 }
 
-
-
-
-
-
 /**
  * bootstrap date-picker
  */
 $(function () {
-    $('.date-picker').datepicker({
+    $('.datePicker').datepicker({
         format: 'yyyy-mm-dd',
         language:"ko",
         todayHighlight:true,
         autoclose:true
     });
-    $("div.date-box").each(function(){
+    $('.dateRange').datepicker({
+        format: "yyyy-mm-dd",
+        startDate: "-10y",
+        calendarWeeks: true,
+        todayHighlight: true
+    });
+    $(".date-box").each(function(){
         var $inputs = $(this).find('input');
-        $inputs.datepicker();
+        $inputs.datepicker({
+            format: 'yyyy-mm-dd',
+            startDate : '-10y', //달력에서 선택할 수 있는 가장 이른 날짜
+            //,language : "ko" //달력의 언어 선택, 그에 맞는 js로 교체해줘야함.
+            todayHighlight: true,
+            autoclose: true,
+            //다음달 이전달로 넘어가는 화살표 모양 커스터마이징
+            // templates : {
+            //     leftArrow: '&laquo;', // <<
+            //     rightArrow: '&raquo;'
+            // }
+        });
         if($inputs.length >= 2){
             var $from = $inputs.eq(0);
             var $to = $inputs.eq(1);
@@ -67,11 +79,7 @@ $(function () {
         }
     });
     var input_length;
-    $(".date-picker").attr({
-        maxlength: "10",
-        autocomplete: "off",
-    });
-    $(".date-picker").keyup(function(e){
+    $(".datePicker").keyup(function(e){
         var input_length = $(this).val().length;
         //숫자,'-'만 입력
         $(this).val($(this).val().replace(/[^0-9-]/gi,""));
@@ -84,12 +92,7 @@ $(function () {
             }
         }
 
-        // if (input_length == 4) {
-        //  $(this).val( $(this).val() + "-" );
-        // } else if (input_length == 7) {
-        //  $(this).val( $(this).val() + "-" );
-        // }        
-        // 날짜형식 이외 focusout 막기
+        //날짜형식 이외 focusout 막기
         $(this).focusout(function(){
             var validformat=/^\d{4}\-\d{2}\-\d{2}$/;
             if(($(this).val() != '') && !validformat.test($(this).val())){
@@ -104,5 +107,22 @@ $(function () {
         }
     });
 });
+
+function setTuiGridFilterPosition(gridId) {
+    let gridWidth,filterWidth,filterLeft,tuiDatepickerLeft;
+    try {
+        console.log('setTuiGridFilterPosition',gridId);
+        $(".tui-grid-filter-container").draggable();
+        gridWidth = $("#"+gridId).offset().left + $("#"+gridId).width();
+        filterWidth = $(".tui-grid-filter-container").offset().left + $(".tui-grid-filter-container").width();
+        filterLeft = $(".tui-grid-filter-container").offset().left;
+        tuiDatepickerLeft = $(".tui-datepicker").offset().left;
+    }catch (e) {
+        if(filterWidth > gridWidth){
+            $(".tui-grid-filter-container").offset({left : (filterLeft - (filterWidth - gridWidth + 19))});
+            $(".tui-datepicker").offset({left: (tuiDatepickerLeft - 57)});
+        }
+    }
+}
 
 

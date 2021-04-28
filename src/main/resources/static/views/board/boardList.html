@@ -8,6 +8,10 @@
   <title>게시판</title>
   <script defer src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
   <script defer th:src="@{/views/board/board.js}"></script>
+  <style>
+    .title{overflow: auto; max-width: inherit;}
+
+  </style>
 </head>
 <body>
 <th:block layout:fragment="pageBody">
@@ -20,34 +24,36 @@
   <div class="container-fluid">
     <div class="row">
       <h3>자유게시판
-        <button id="btnInput" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#insertModal">새글
-        </button>
       </h3>
-      <form id="searchForm">
+      <div class="d-flex justify-content-between mb-1">
+        <select name="pageSize" class="form-select w-auto">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+        <button id="btnInput" class="btn btn-outline-dark" tabindex="-1" data-bs-toggle="modal" data-bs-target="#insertModal">새글</button>
+      </div>
+      <form id="searchForm" onsubmit="return false;">
         <input type="hidden" title="현재페이지번호" name="pageNum" value="1">
-        <div class="input-group mb-3">
-          <select name="pageSize" class="form-select">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-            <option value="40">40</option>
-            <option value="50">50</option>
-          </select>
-          <span class="input-group-text">제목</span>
-          <input type="text" name="title" class="form-control" autocomplete="off">
-          <span class="input-group-text">이름</span>
-          <input type="text" name="userName" class="form-control" autocomplete="off">
-          <span class="input-group-text">등록일검색:</span>
-          <!--                        <input type="text" name="startDate" class="date-picker form-control" autocomplete="off" placeholder="시작일">-->
-          <!--                        <span class="input-group-text">-</span>-->
-          <!--                        <input type="text" name="endDate" class="date-picker form-control" autocomplete="off" placeholder="종료일">-->
-          <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-            <input type="text" id="tui-date-picker-target" aria-label="Date-Time">
-            <span class="tui-ico-date"></span>
+        <div class="d-flex justify-content-between mb-1">
+          <div class="input-group">
+            <span class="input-group-text">제목</span>
+            <input type="text" name="title" class="form-control" autocomplete="off">
+            <span class="input-group-text">이름</span>
+            <input type="text" name="userName" class="form-control" autocomplete="off">
           </div>
-          <div id="tui-date-picker-container" style="margin-top: -1px;"></div>
+
+          <div class="date-box input-group" id="datepicker1">
+            <span class="input-group-text">등록일검색:</span>
+            <input type="text" class="form-control datePicker" name="start" autocomplete="off">
+            <span class="input-group-text">-</span>
+            <input type="text" class="form-control datePicker" name="end" autocomplete="off">
+          </div>
         </div>
       </form>
+
       <div id="grid"></div>
       <div id="pagination" class="tui-pagination"></div>
     </div>
@@ -104,7 +110,7 @@
           <table class="table table-sm table-bordered">
             <colgroup>
               <col width="20%">
-              <col>
+              <col width="80%">
             </colgroup>
             <tr>
               <th>작성자</th>
@@ -112,7 +118,7 @@
             </tr>
             <tr>
               <th>제목</th>
-              <td name="title"></td>
+              <td name="title" class="title"></td>
             </tr>
             <tr>
               <td colspan="2">
