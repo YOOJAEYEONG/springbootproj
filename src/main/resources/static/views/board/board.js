@@ -1,6 +1,6 @@
 "use strict";
 let grid;
-let Grid = tui.Grid;
+const Grid = tui.Grid;
 let pagination;
 let dbData;
 let selectContent;//선택한 게시물의 정보를 저장
@@ -11,16 +11,18 @@ const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), 
 const updateModal = new bootstrap.Modal(document.getElementById('updateModal'), {
   backdrop:"static"//모달창 외부 클릭시 창 닫힘 여부
 });
+//Toast Editor 생성
 const viewer = toastui.Editor.factory({
   el: document.querySelector('#detailViewer')
   ,viewer: true
   ,initialValue: ''//초기 내용
   // ,hideModeSwitch: false,
 });
+//Toast Editor 의 버튼들을 설정하거나 커스텀 버튼을 추가할수있다.
 const editorButtonList = [
   'heading','bold','italic','strike','divider','hr','quote',
   'divider',/*'ul','ol'*/,'task','indent','outdent','divider',
-  'table','image','link','divider','code','codeblock','divider',
+  'table',/*'image',*/'link','divider','code','codeblock','divider',
   // Using Option: Customize the last button
   // {
   //     type: 'button',
@@ -53,14 +55,14 @@ var container = document.getElementById('tui-date-picker-container');
 var target = document.getElementById('tui-date-picker-target');
 
 
-
-
-ajaxSelectList();//리스트 조회
-
-// $("#btnInput").on('shown.bs.modal', function () {
-//   $(this).focus();
-// });
+//게시글 등록 api
 $("#ajaxInsert").on("click", ajaxInsert);
+//새글 버튼
+$("#btnInsert").on("click", function () {
+  insertForm.reset();
+  editorInsert.setMarkdown('');
+});
+//수정 화면 팝업
 $("#btnUpdate").on("click",function () {
   $("#detailModal .btn-close").trigger("click");
   updateModal.show();
@@ -68,26 +70,112 @@ $("#btnUpdate").on("click",function () {
   $("#updateForm").jform(selectContent);
   editorUpdate.setHtml(selectContent.contents);
 });
+//검색폼 입력시
 $("#searchForm input").on("keyup",function (evt) {
   if (evt.key == "Enter"){
     $("#searchForm input[name=pageNum]").val(1);
     ajaxSelectList(true);
   }
 });
+//페이지 번호 변경
 $("#searchForm select[name=pageSize]").on("change",function (evt) {
   grid.setPerPage(parseInt(evt.target.value));
   $("#searchForm input[name=pageNum]").val(1);
   ajaxSelectList(true);
 });
+//게시글 삭제 api
 $("#ajaxDelete").on("click",ajaxDeletePost);
+//게시글 수정 api
 $("#ajaxUpdate").on("click",ajaxUpdatePost);
-//댓글등록
+//댓글등록 api
 $("#ajaxBoardReplyPost").on("click", ajaxBoardReplyPost);
+//파일첨부시
+$("input:file").on("change", refreshFileList);
+
+$(function () {
+  tui.Grid.applyTheme('clean',{row:{hover:{background:'whitesmoke'}}}); // Call API of static method
+  ajaxSelectList();//리스트 조회
+
+});
+
+/**
+ * 첨부파일 변경시 이벤트 핸들러
+ * @param {Event} e
+ */
+function refreshFileList(e) {
+  console.log('files:',this.files,);
+  // console.log("e",e);
+  let files = this.files;
+  for (let i = 0; i < files.length; i++){
+    console.log(
+      files[i].name
+      ,getFileSize(files[i].size)
+      ,files[i].type
+      ,files[i].prototype);
+    putFileContent(files[i]);
+  }
+}
+
+/**
+ * 첨부한 파일을 본문에 삽입
+ * @param file
+ */
+function putFileContent(file) {
+
+  let selection = document.getSelection();
+  console.log(selection)
+
+  var cursorPos = selection.anchorOffset;
+  var anchorNode = selection.anchorNode;
+  var div = document.createElement("div");
+  div.className = "border";
+  debugger
+  if (anchorNode.nodeName == "DIV"){
+    var a = document.createElement("a");
+    a.type = "button";
+    a.className = "btn btn-outline-light";
+
+    var b = document.createElement("b");
+    b.innerText = file.name;
+
+    var span = document.createElement("span");
+    span.innerText = "(" + getFileSize(file.size) + ")";
+    span.className = "m-1";
+
+    a.appendChild(b);
+    a.appendChild(span);
+    div.appendChild(a);
+    anchorNode.appendChild(div);
+  }else{
+    div.innerText = "InsertMe!";
+  }
+  var oldContent = selection.anchorNode.nodeValue;
+  var newContent = "";
+  if (oldContent){
+    newContent = oldContent.substring(0, cursorPos) + el + oldContent.substring(cursorPos);
+  }else{
+    newContent = el;
+  }
+  console.log(selection.anchorNode.textContent)
+  selection.anchorNode.nodeValue = newContent;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
  * 리스트생성
- * @param {Object} data : DBListData
+ * @param {Array} data : DBListData
  * */
 function createGrid(data) {
   var options = {
@@ -104,7 +192,9 @@ function createGrid(data) {
     $("#searchForm input[name=pageNum]").val(currentPage);
     ajaxSelectList(false);
   });
-  tui.Grid.applyTheme('clean',{row:{hover:{background:'whitesmoke'}}}); // Call API of static method
+  if(grid) {
+    grid.destroy();
+  }
   grid = new tui.Grid({
     el: document.getElementById('grid') // Container element
     ,scrollY : false
@@ -121,13 +211,12 @@ function createGrid(data) {
       {
         header: 'No'
         ,name: 'rnum'
+        ,width : 80
         ,align : "center"
-        ,resizable : false
       },
       {
         header: '제목'
         ,name: 'title'
-        ,width: 500
         ,ellipsis : true // 커럼 사이즈보다 넘치는 내용을 자동 ... 처리 해줌
         ,escapeHTML : true //html entity 형식을 자동 디코딩해줌
         ,renderer:{
@@ -152,7 +241,7 @@ function createGrid(data) {
     ]
   });
   grid.on("click",function (evt) {
-    console.log(evt);
+    // console.log(evt);
     if (evt.targetType == "cell"){
       selectContent = dbData[evt.rowKey];//선택한 게시물의 정보를 전역변수에 저장
       ajaxSelectBoardPost();
@@ -161,6 +250,7 @@ function createGrid(data) {
       $("#detailModal td.title").css('maxWidth',width - width/2)
     }
   });
+
   function titleRenderer(props) {
     // console.log('titleRenderer',props);
     var div = document.createElement("div");

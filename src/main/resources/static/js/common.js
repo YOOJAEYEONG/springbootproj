@@ -1,7 +1,7 @@
 "use strict";
 console.log("common.js");
 
-var DatePicker = tui.DatePicker;
+const DatePicker = tui.DatePicker;
 
 $(function () {
     $('.modal-dialog').draggable({
@@ -108,10 +108,14 @@ $(function () {
     });
 });
 
+/**
+ * Toast Grid 필터가 화면 밖에 생성되는 케이스 수정
+ *
+ * @param gridId {string}
+ */
 function setTuiGridFilterPosition(gridId) {
     let gridWidth,filterWidth,filterLeft,tuiDatepickerLeft;
     try {
-        console.log('setTuiGridFilterPosition',gridId);
         $(".tui-grid-filter-container").draggable();
         gridWidth = $("#"+gridId).offset().left + $("#"+gridId).width();
         filterWidth = $(".tui-grid-filter-container").offset().left + $(".tui-grid-filter-container").width();
@@ -124,5 +128,28 @@ function setTuiGridFilterPosition(gridId) {
         }
     }
 }
+
+/**
+ * 파일 크기를 반환
+ * @example getFileSize(1500) => 1.5 kb
+ * @param {number} fileSize
+ * @returns {string}
+ */
+function getFileSize(fileSize) {
+    const unit = ["Byte","KB","MB","GB","TB","PB","EB","ZB","YB"];
+    const size = 1024;
+    let sizeStr;
+    for (let i = 1; fileSize >= size; i++) {
+        fileSize /= size;
+        if (fileSize < size){
+            sizeStr = (Math.floor(fileSize * 100) / 100) + " " + unit[i];
+        }
+    }
+    if(fileSize < size){
+      sizeStr = (Math.floor(fileSize * 100) / 100) + " " + unit[0]
+    }
+    return sizeStr;
+}
+
 
 
