@@ -2,7 +2,7 @@
 let grid;
 const Grid = tui.Grid;
 let pagination;
-let dbData;
+let gridData;
 let selectContent;//선택한 게시물의 정보를 저장
 var replTitleSpan;//댓글내용을 임시 저장할 변수
 const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), {
@@ -78,9 +78,9 @@ $("#searchForm input").on("keyup",function (evt) {
   }
 });
 //페이지 번호 변경
-$("#searchForm select[name=pageSize]").on("change",function (evt) {
-  grid.setPerPage(parseInt(evt.target.value));
+$("select[name=pageSize]").on("change",function (evt) {
   $("#searchForm input[name=pageNum]").val(1);
+  createGrid();
   ajaxSelectList(true);
 });
 //게시글 삭제 api
@@ -129,24 +129,38 @@ function putFileContent(file) {
   var anchorNode = selection.anchorNode;
   var div = document.createElement("div");
   div.className = "border";
-  debugger
+  console.log("nodeName",anchorNode.nodeName);
+  console.log("nodeValue",anchorNode.nodeValue);
+  console.log("nodeType",anchorNode.nodeType);
+  console.log("textContent",anchorNode.textContent);
+  console.log("DOCUMENT_NODE",anchorNode.DOCUMENT_NODE);
+  console.log("DOCUMENT_TYPE_NODE",anchorNode.DOCUMENT_TYPE_NODE);
+  console.log("lastChild",anchorNode.lastChild);
+  console.log("parentNode",anchorNode.parentNode);
+  console.log("TEXT_NODE",anchorNode.TEXT_NODE);
+  //커서위치에 입력한 텍스트가 없는 경우
   if (anchorNode.nodeName == "DIV"){
-    var a = document.createElement("a");
-    a.type = "button";
-    a.className = "btn btn-outline-light";
+    //커서의 위치가 에디터 안에 있으면
+    if (anchorNode.parentNode == "tui-editor-contents"){
+      var a = document.createElement("a");
+      a.type = "button";
+      a.className = "btn btn-outline-light";
 
-    var b = document.createElement("b");
-    b.innerText = file.name;
+      var b = document.createElement("b");
+      b.innerText = file.name;
 
-    var span = document.createElement("span");
-    span.innerText = "(" + getFileSize(file.size) + ")";
-    span.className = "m-1";
+      var span = document.createElement("div");
+      span.innerText = "(" + getFileSize(file.size) + ")";
+      span.className = "m-1";
 
-    a.appendChild(b);
-    a.appendChild(span);
-    div.appendChild(a);
-    anchorNode.appendChild(div);
-  }else{
+      a.appendChild(b);
+      a.appendChild(span);
+      div.appendChild(a);
+      anchorNode.appendChild(div);
+      anchorNode.appendChild(document.createElement("br"));
+      
+    }
+  }else if(anchorNode.nodeName == "#text"){
     div.innerText = "InsertMe!";
   }
   var oldContent = selection.anchorNode.nodeValue;
@@ -160,26 +174,13 @@ function putFileContent(file) {
   selection.anchorNode.nodeValue = newContent;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
- * 리스트생성
- * @param {Array} data : DBListData
- * */
-function createGrid(data) {
+ * 페이지버튼생성
+ * @param {number} totalCount
+ */
+function createPagination(totalCount) {
   var options = {
-    totalItems: data.pagination.totalCount,
+    totalItems: totalCount,
     itemsPerPage: $("select[name=pageSize]").val(),
     visiblePages: 10, //페이지버튼 갯수 설정
     page: $("#searchForm input[name=pageNum]").val(),
@@ -192,14 +193,22 @@ function createGrid(data) {
     $("#searchForm input[name=pageNum]").val(currentPage);
     ajaxSelectList(false);
   });
+}
+
+/**
+ * 리스트생성
+ * */
+function createGrid() {
+
   if(grid) {
     grid.destroy();
   }
   grid = new tui.Grid({
     el: document.getElementById('grid') // Container element
-    ,scrollY : false
+    ,scrollY : true
     ,scrollX : true
-    ,data : data.contents
+    ,bodyHeight : "fitToParent"
+    // ,data : gridData
     // ,rowHeaders: ['rowNum', 'checkbox']
     ,onGridUpdated : function (evt) {
       console.log(evt);
@@ -243,7 +252,7 @@ function createGrid(data) {
   grid.on("click",function (evt) {
     // console.log(evt);
     if (evt.targetType == "cell"){
-      selectContent = dbData[evt.rowKey];//선택한 게시물의 정보를 전역변수에 저장
+      selectContent = gridData[evt.rowKey];//선택한 게시물의 정보를 전역변수에 저장
       ajaxSelectBoardPost();
       detailModal.show();
       var width = $("#detailModal").width();
@@ -257,7 +266,7 @@ function createGrid(data) {
     div.setAttribute("class","tui-grid-cell-content");
     div.setAttribute("style","cursor:pointer;");
 
-    var replyCnt = dbData[props.rowKey].replyCnt;
+    var replyCnt = gridData[props.rowKey].replyCnt;
     if (replyCnt>0){
       div.innerHTML = props.value+"<span class='badge rounded-pill bg-warning text-dark m-1'>"+replyCnt+"</span>";
     }else{
@@ -287,18 +296,21 @@ function ajaxSelectList(resetPaginationFlag) {
     success : function (data) {
       console.log('ajaxSelectList',data);
       if (data.result == true){
-        dbData = data.data.contents;
         //utcdate를 localdate로 변환
         for (const datum of data.data.contents) {
           datum.updateDate = convertUTCtoLocal(datum.updateDate);
         }
+        gridData = data.data.contents;
+
         if(grid){
-          grid.resetData(data.data.contents); // Call API of instance's public method
+          grid.resetData(gridData); // Call API of instance's public method
           if (resetPaginationFlag){
             pagination.reset(data.data.pagination.totalCount);
           }
         }else{
-          createGrid(data.data);
+          createPagination(data.data.pagination.totalCount);
+          createGrid();
+          grid.resetData(gridData);
         }
       }
     },

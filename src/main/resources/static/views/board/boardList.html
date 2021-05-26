@@ -8,10 +8,7 @@
   <title>게시판</title>
   <script defer src="https://uicdn.toast.com/editor/latest/toastui-jquery-editor.min.js"></script>
   <script defer th:src="@{/views/board/board.js}"></script>
-  <style>
-    .title{overflow: auto; max-width: inherit;}
-
-  </style>
+  <link rel="stylesheet" href="/views/board/board.css">
 </head>
 <body>
 <th:block layout:fragment="pageBody">
@@ -22,7 +19,7 @@
     </style>
   </th:block>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row h70vh">
       <h3>자유게시판
       </h3>
       <div class="d-flex justify-content-between mb-1">
@@ -173,7 +170,8 @@
               </tr>
               <tr>
                 <th>제목</th>
-                <td colspan="3"><input type="text" name="title" maxlength="500" class="form-control" autocomplete="off">
+                <td colspan="3">
+                  <input type="text" name="title" maxlength="500" class="form-control" autocomplete="off">
                 </td>
               </tr>
               <tr>
