@@ -15,8 +15,10 @@
             <if test='userName != null and userName != ""'>
                 AND USER_NAME LIKE '%' #{userName} '%'
             </if>
-            <if test='start != null and start != "" and end != null and end != ""'>
+            <if test='start != null and start != ""'>
                 AND UNIX_TIMESTAMP(UPDATE_DATE) <![CDATA[ >= ]]> UNIX_TIMESTAMP(#{start})
+            </if>
+            <if test='end != null and end != ""'>
                 AND UNIX_TIMESTAMP(UPDATE_DATE) <![CDATA[ < ]]> UNIX_TIMESTAMP(#{end})
             </if>
         </where>
@@ -45,8 +47,10 @@
             <if test='userName != null and userName != ""'>
                 AND USER_NAME LIKE '%' #{userName} '%'
             </if>
-            <if test='start != null and start != "" and end != null and end != ""'>
+            <if test='start != null and start != ""'>
                 AND UNIX_TIMESTAMP(UPDATE_DATE) <![CDATA[ >= ]]> UNIX_TIMESTAMP(#{start})
+            </if>
+             <if test='end != null and end != ""'>
                 AND UNIX_TIMESTAMP(UPDATE_DATE) <![CDATA[ < ]]> UNIX_TIMESTAMP(#{end})
             </if>
         </where>

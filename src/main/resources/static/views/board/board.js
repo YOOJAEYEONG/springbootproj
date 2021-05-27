@@ -77,6 +77,7 @@ $("#searchForm input").on("keyup",function (evt) {
     ajaxSelectList(true);
   }
 });
+$("#searchForm").find("input[name=start],input[name=end]").on("change", ()=> ajaxSelectList(true));
 //페이지 번호 변경
 $("select[name=pageSize]").on("change",function (evt) {
   $("#searchForm input[name=pageNum]").val(1);
